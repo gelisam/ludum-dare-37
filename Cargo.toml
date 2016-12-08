@@ -1,0 +1,6 @@
+[package]
+name = "ludum-dare-37"
+version = "0.1.0"
+authors = ["Samuel Gélineau <gelisam+github@gmail.com>"]
+
+[dependencies]
