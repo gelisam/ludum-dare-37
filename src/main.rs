@@ -1,8 +1,10 @@
+extern crate carboxyl;
 extern crate glutin_window;
 extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use carboxyl::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
@@ -11,7 +13,8 @@ use piston::window::WindowSettings;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
-    rotation: f64   // Rotation for the square.
+    dt: Sink<f64>, // time increase events
+    rotation: Signal<f64>   // Rotation for the square.
 }
 
 impl App {
@@ -22,7 +25,7 @@ impl App {
         const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
-        let rotation = self.rotation;
+        let rotation = self.rotation.sample();
         let (x, y) = ((args.width / 2) as f64,
                       (args.height / 2) as f64);
 
@@ -40,8 +43,7 @@ impl App {
     }
 
     fn update(&mut self, args: &UpdateArgs) {
-        // Rotate 2 radians per second.
-        self.rotation += 2.0 * args.dt;
+        self.dt.send(args.dt);
     }
 }
 
@@ -60,9 +62,13 @@ fn main() {
         .unwrap();
 
     // Create a new game and run it.
+    let dt = Sink::new();
+    let time = dt.stream().fold(0.0, |t,dt| t + dt);
+    let rotation = time.map(|t| 2.0 * t); // Rotate 2 radians per second.
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        rotation: 0.0
+        dt: dt,
+        rotation: rotation
     };
 
     let mut events = window.events();
