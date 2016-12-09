@@ -64,9 +64,12 @@ fn main() {
         .unwrap();
 
     // Create a new game and run it.
-    let time: Signal<time::Tm> = now();
-    let t0 = time.sample();
-    let seconds: Signal<f64> = lift!(move |t| (t - t0).num_milliseconds() as f64 / 1000.0, &time);
+    let seconds: Signal<f64> = {
+      let time: Signal<time::Tm> = now();
+      let t0 = time.sample();
+      lift!(move |t| (t - t0).num_milliseconds() as f64 / 1000.0, &time)
+    };
+
     let rotation = lift!(|t| 2.0 * t, &seconds); // Rotate 2 radians per second.
     let mut app = App {
         gl: GlGraphics::new(opengl),
