@@ -78,12 +78,10 @@ fn main() {
 
     let mut events = window.events();
     while let Some(e) = events.next(&mut window) {
-        if let Some(r) = e.render_args() {
-            app.render(&r);
-        }
-
-        if let Some(u) = e.update_args() {
-            app.update(&u);
+        match e {
+          Event::Render(r) => app.render(&r),
+          Event::Update(u) => app.update(&u),
+          _ => ()
         }
     }
 }
