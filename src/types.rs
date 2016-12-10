@@ -1,8 +1,12 @@
+use graphics::math::Vec2d;
+
+pub type Pos = Vec2d<i8>;
+pub type Dir = Vec2d<i8>;
 pub type Seconds = f64;
 pub type Radians = f64;
 
 pub enum RawInputEvent {
-  MouseClick,
+  Move(Dir),
   TimePasses(Seconds),
 }
 

@@ -9,7 +9,7 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
       
       state.square_rotation = 2.0 * state.time;
     },
-    MouseClick => {
+    Move(_) => {
       state.message = None;
     },
   }
