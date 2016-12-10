@@ -16,26 +16,10 @@ use piston::window::WindowSettings;
 
 mod font;
 mod resources;
+mod types;
 use font::*;
 use resources::*;
-
-
-#[derive(Clone)]
-struct Context {
-  square_rotation: f64,
-}
-
-
-#[derive(Clone)]
-enum RawInputEvent {
-  MouseClick,
-}
-
-
-#[derive(Clone)]
-struct State {
-  is_square_activated: bool,
-}
+use types::*;
 
 
 fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Signal<State>) {
@@ -130,7 +114,7 @@ fn main() {
     use piston::input::Event::{ Render, Input };
     use piston::input::Input::{ Press };
     use piston::input::MouseButton::{ Left };
-    use RawInputEvent::{ MouseClick };
+    use types::RawInputEvent::{ MouseClick };
     
     match e {
       Render(args)              => render(&mut gl, &args, &resources, &context.sample(), &state.sample()),
