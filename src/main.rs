@@ -60,14 +60,57 @@ fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Si
 }
 
 
-fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Context, state: &State) {
+struct Resources {
+  //big_font:      opengl_graphics::Texture,
+  //floor:         opengl_graphics::Texture,
+  //goal_top:      opengl_graphics::Texture,
+  //goal:          opengl_graphics::Texture,
+  //inventory_key: opengl_graphics::Texture,
+  //key:           opengl_graphics::Texture,
+  //locked:        opengl_graphics::Texture,
+  player:        opengl_graphics::Texture,
+  //sign:          opengl_graphics::Texture,
+  //small_font:    opengl_graphics::Texture,
+  //spiny:         opengl_graphics::Texture,
+  //start_top:     opengl_graphics::Texture,
+  //start:         opengl_graphics::Texture,
+  //unlocked_top:  opengl_graphics::Texture,
+  //unlocked:      opengl_graphics::Texture,
+  //wall:          opengl_graphics::Texture,
+}
+
+fn load_resources() -> Resources {
+  use opengl_graphics::Texture;
+  use std::path::Path;
+  
+  Resources {
+    //big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
+    //floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
+    //goal_top:      Texture::from_path(Path::new("images/goal-top.png")).unwrap(),
+    //goal:          Texture::from_path(Path::new("images/goal.png")).unwrap(),
+    //inventory_key: Texture::from_path(Path::new("images/inventory-key.png")).unwrap(),
+    //key:           Texture::from_path(Path::new("images/key.png")).unwrap(),
+    //locked:        Texture::from_path(Path::new("images/locked.png")).unwrap(),
+    player:        Texture::from_path(Path::new("images/player.png")).unwrap(),
+    //sign:          Texture::from_path(Path::new("images/sign.png")).unwrap(),
+    //small_font:    Texture::from_path(Path::new("images/small-font.png")).unwrap(),
+    //spiny:         Texture::from_path(Path::new("images/spiny.png")).unwrap(),
+    //start_top:     Texture::from_path(Path::new("images/start-top.png")).unwrap(),
+    //start:         Texture::from_path(Path::new("images/start.png")).unwrap(),
+    //unlocked_top:  Texture::from_path(Path::new("images/unlocked-top.png")).unwrap(),
+    //unlocked:      Texture::from_path(Path::new("images/unlocked.png")).unwrap(),
+    //wall:          Texture::from_path(Path::new("images/wall.png")).unwrap(),
+  }
+}
+
+
+fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
 
   const GREEN:  [f32; 4] = [0.0, 1.0, 0.0, 1.0];
   const RED:    [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
   let image  = graphics::image::Image::new().rect(graphics::rectangle::square(0.0, 0.0, 10.0));
-  let texture = opengl_graphics::Texture::from_path(std::path::Path::new("images/player.png")).unwrap();
 
   let square = rectangle::square(0.0, 0.0, 10.0);
   let rotation = context.square_rotation;
@@ -91,7 +134,7 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Conte
     
     // Draw something rotating around the middle of the screen.
     if active {
-      image.draw(&texture, &DrawState::default(), transform, gl);
+      image.draw(&resources.player, &DrawState::default(), transform, gl);
     } else {
       rectangle(RED, square, transform, gl);
     }
@@ -112,6 +155,7 @@ fn main() {
       .build()
       .unwrap();
     let mut gl = GlGraphics::new(opengl);
+    let resources = load_resources();
 
     let sink = Sink::new();
     let (context, state) = frp_network(&sink.stream());
@@ -125,7 +169,7 @@ fn main() {
       use RawInputEvent::{ MouseClick };
 
       match e {
-        Render(args)              => render(&mut gl, &args, &context.sample(), &state.sample()),
+        Render(args)              => render(&mut gl, &args, &resources, &context.sample(), &state.sample()),
         Input(Press(Mouse(Left))) => sink.send(MouseClick),
         _            => ()
       }
