@@ -49,29 +49,17 @@ fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transfor
 pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resources, gl: &mut GlGraphics) {
   use graphics::*;
   
-  let rotation = state.square_rotation;
-  let (x, y) = ( (args.width / 2) as f64
-               , (args.height / 2) as f64
-               );
-  
   gl.draw(args.viewport(), |c, gl| {
-    // Clear the screen.
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
-    let transform = c.transform
-        .trans(x, y)
-        .rot_rad(rotation)
-        .scale(5.0, 5.0)
-        .trans(-5.0, -5.0);
-    
-    // Draw something rotating around the middle of the screen.
+    let transform = c.transform.scale(5.0, 5.0);
     draw_cell(state.level_number, [0,0], resources, transform, gl);
     
     for message in state.message {
-      // Display the title over the animation
+      // Fade to white to make the text more readable
       rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+      
       draw_text(message, &resources.big_font, c.transform, gl);
-      draw_text("1-99", &resources.small_font, transform, gl);
     }
   });
 }

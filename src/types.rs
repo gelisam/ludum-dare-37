@@ -24,7 +24,6 @@ pub struct State {
   
   pub message: Option<Message>,
   pub level_number: LevelNumber,
-  pub square_rotation: Radians,
 }
 
 pub fn initial_state() -> State {
@@ -33,6 +32,5 @@ pub fn initial_state() -> State {
     message: Some("I've Seen This Room\n\
                    Twice Already"),
     level_number: 0,
-    square_rotation: 0.0,
   }
 }
