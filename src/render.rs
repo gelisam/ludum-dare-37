@@ -14,6 +14,8 @@ use resources::*;
 use types::*;
 
 
+pub const PIXEL_SIZE: u8 = 5;
+
 fn draw_image(texture: &Texture, transform: Matrix2d, gl: &mut GlGraphics) {
   unsafe {
     // Sharp pixels please!
@@ -63,7 +65,7 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
   gl.draw(args.viewport(), |c, gl| {
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
-    let transform = c.transform.scale(5.0, 5.0);
+    let transform = c.transform.scale(PIXEL_SIZE as f64, PIXEL_SIZE as f64);
     draw_level(state.level_number, resources, transform, gl);
     
     for message in state.message {
