@@ -66,11 +66,11 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     let transform = c.transform.scale(5.0, 5.0);
     draw_level(state.level_number, resources, transform, gl);
     
-    //for message in state.message {
-    //  // Fade to white to make the text more readable
-    //  rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-    //  
-    //  draw_text(message, &resources.big_font, c.transform, gl);
-    //}
+    for message in state.message {
+      // Fade to white to make the text more readable
+      rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+      
+      draw_text(message, &resources.big_font, c.transform, gl);
+    }
   });
 }
