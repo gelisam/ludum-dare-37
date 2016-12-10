@@ -4,14 +4,32 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
-use opengl_graphics::{ GlGraphics };
+use graphics::math::{ Matrix2d };
+use opengl_graphics::{ GlGraphics, Texture };
 
 use font::*;
 use resources::*;
 use types::*;
 
 
-pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources) {
+fn draw_image(texture: &Texture, transform: Matrix2d, gl: &mut GlGraphics) {
+  use graphics::*;
+  
+  unsafe {
+    // Sharp pixels please!
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+  }
+  
+  image(texture, transform, gl);
+  
+  unsafe {
+    // Sometimes the pixels still aren't sharp. There is no logical reason why setting this again after the
+    // image has already been drawn should help, but it does!
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+  }
+}
+
+pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resources, gl: &mut GlGraphics) {
   use graphics::*;
   
   let rotation = state.square_rotation;
@@ -30,16 +48,7 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
         .trans(-5.0, -5.0);
     
     // Draw the player rotating around the middle of the screen.
-    unsafe {
-      // Sharp pixels please!
-      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    }
-    image(&resources.player, transform, gl);
-    unsafe {
-      // Sometimes the pixels still aren't sharp. There is no logical reason why setting this again after the
-      // image has already been drawn should help, but it does!
-      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    }
+    draw_image(&resources.player, transform, gl);
     
     for message in state.message {
       // Display the title over the animation

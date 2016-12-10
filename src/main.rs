@@ -47,7 +47,7 @@ fn main() {
     use types::RawInputEvent::{ Move, TimePasses };
     
     match e {
-      Render(args)                  => render(&mut state, &mut gl, &args, &resources),
+      Render(args)                  => render(&mut state, &args, &resources, &mut gl),
       Input(Press(Keyboard(Up)))    => update(&mut state, Move(UP)),
       Input(Press(Keyboard(Left)))  => update(&mut state, Move(LEFT)),
       Input(Press(Keyboard(Down)))  => update(&mut state, Move(DOWN)),
