@@ -11,9 +11,6 @@ use resources::*;
 use types::*;
 
 
-const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
-const COVER: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
-
 pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources) {
   use graphics::*;
   
@@ -30,7 +27,7 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
     }
     
     // Clear the screen.
-    clear(WHITE, gl);
+    clear([1.0, 1.0, 1.0, 1.0], gl);
     
     let transform = c.transform
         .trans(x, y)
@@ -43,7 +40,7 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
     
     if !active {
       // Display the title over the animation
-      rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+      rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
       draw_text("I've Seen This Room\n\
                  Twice Already", &resources.big_font, c.transform, gl);
       draw_text("1-99", &resources.small_font, transform, gl);
