@@ -27,8 +27,8 @@ fn main() {
   
   // Create an Glutin window.
   let mut window: Window = WindowSettings::new(
-        "spinning-square",
-        [200, 200]
+        "I've Seen This Room Twice Already",
+        [512, 512]
       )
       .opengl(opengl)
       .exit_on_esc(true)
