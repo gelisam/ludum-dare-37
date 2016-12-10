@@ -1,14 +1,17 @@
+pub type Seconds = f64;
+pub type Radians = f64;
+
 pub enum RawInputEvent {
   MouseClick,
-  TimePasses(f64),
+  TimePasses(Seconds),
 }
 
 
 pub struct State {
-  pub time: f64,
+  pub time: Seconds,
   
   pub message: Option<&'static str>,
-  pub square_rotation: f64,
+  pub square_rotation: Radians,
 }
 
 pub fn initial_state() -> State {
