@@ -35,27 +35,27 @@ struct State {
 
 fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Signal<State>) {
   let seconds: Signal<f64> = {
-    let time: Signal<time::Tm> = now();
-    let t0 = time.sample();
-    lift!(move |t| (t - t0).num_milliseconds() as f64 / 1000.0, &time)
-  };
-
+        let time: Signal<time::Tm> = now();
+        let t0 = time.sample();
+        lift!(move |t| (t - t0).num_milliseconds() as f64 / 1000.0, &time)
+      };
+  
   let square_rotation = lift!(|t| 2.0 * t, &seconds); // Rotate 2 radians per second.
   let is_square_activated = raw_input_events.fold(false, |b, _| !b); // Toggle on each click.
-
+  
   let context = lift!(|r|
-    Context {
-      square_rotation: r,
-    },
-    &square_rotation
-  );
+        Context {
+          square_rotation: r,
+        },
+        &square_rotation
+      );
   let state = lift!(|a|
-    State {
-      is_square_activated: a,
-    },
-    &is_square_activated
-  );
-
+        State {
+          is_square_activated: a,
+        },
+        &is_square_activated
+      );
+  
   (context, state)
 }
 
@@ -82,7 +82,7 @@ struct Resources {
 fn load_resources() -> Resources {
   use opengl_graphics::Texture;
   use std::path::Path;
-
+  
   Resources {
     big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
     //floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
@@ -111,44 +111,45 @@ fn draw_big_text(s: &str, resources: &Resources, transform: graphics::math::Matr
   use graphics::draw_state::DrawState;
   use graphics::image::draw_many;
   use graphics::types::{ Rectangle, SourceRectangle };
-
-  let rects2: Vec<(Rectangle, SourceRectangle)> = s.chars().enumerate().map(
-    |(i, c)| {
-      let x = c as u8 % 25;
-      let y = c as u8 / 25;
-      ([i as f64 * 10.0, 0.0, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])
-    }
-  ).collect();
-  // &text.chars().enumerate().map(|(i, c)| ([0.0, 0.0, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])).collect(),
-
-  draw_many(&rects2, WHITE, &resources.big_font, &DrawState::default(), transform, gl);
+  
+  let rects: Vec<(Rectangle, SourceRectangle)> = s.chars().enumerate().map(
+        |(i, c)| {
+          let x = c as u8 % 25;
+          let y = c as u8 / 25;
+          ([i as f64 * 10.0, 0.0, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])
+        }
+      ).collect();
+  
+  draw_many(&rects, WHITE, &resources.big_font, &DrawState::default(), transform, gl);
 }
 
 fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
-
+  
   let rotation = context.square_rotation;
   let active = state.is_square_activated;
-  let (x, y) = ((args.width / 2) as f64,
-                (args.height / 2) as f64);
-
+  let (x, y) = ( (args.width / 2) as f64
+               , (args.height / 2) as f64
+               );
+  
   gl.draw(args.viewport(), |c, gl| {
     // Sharp pixels please!
     unsafe {
       gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
     }
-
+    
     // Clear the screen.
     clear(WHITE, gl);
-
-    let transform = c.transform.trans(x, y)
-                               .rot_rad(rotation)
-                               .scale(5.0, 5.0)
-                               .trans(-5.0, -5.0);
-
+    
+    let transform = c.transform
+        .trans(x, y)
+        .rot_rad(rotation)
+        .scale(5.0, 5.0)
+        .trans(-5.0, -5.0);
+    
     // Draw the player rotating around the middle of the screen.
     image(&resources.player, transform, gl);
-
+    
     if !active {
       // Display the title over the animation
       rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
@@ -158,11 +159,11 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
 }
 
 fn main() {
-    // Change this to OpenGL::V2_1 if not working.
-    let opengl = OpenGL::V3_2;
-
-    // Create an Glutin window.
-    let mut window: Window = WindowSettings::new(
+  // Change this to OpenGL::V2_1 if not working.
+  let opengl = OpenGL::V3_2;
+  
+  // Create an Glutin window.
+  let mut window: Window = WindowSettings::new(
         "spinning-square",
         [200, 200]
       )
@@ -170,25 +171,24 @@ fn main() {
       .exit_on_esc(true)
       .build()
       .unwrap();
-    let mut gl = GlGraphics::new(opengl);
-    let resources = load_resources();
-
-    let sink = Sink::new();
-    let (context, state) = frp_network(&sink.stream());
-
-    let mut events = window.events();
-    while let Some(e) = events.next(&mut window) {
-      use piston::input::Button::{ Mouse };
-      use piston::input::Event::{ Render, Input };
-      use piston::input::Input::{ Press };
-      use piston::input::MouseButton::{ Left };
-      use RawInputEvent::{ MouseClick };
-
-      match e {
-        Render(args)              => render(&mut gl, &args, &resources, &context.sample(), &state.sample()),
-        Input(Press(Mouse(Left))) => sink.send(MouseClick),
-        _            => ()
-      }
+  let mut gl = GlGraphics::new(opengl);
+  let resources = load_resources();
+  
+  let sink = Sink::new();
+  let (context, state) = frp_network(&sink.stream());
+  
+  let mut events = window.events();
+  while let Some(e) = events.next(&mut window) {
+    use piston::input::Button::{ Mouse };
+    use piston::input::Event::{ Render, Input };
+    use piston::input::Input::{ Press };
+    use piston::input::MouseButton::{ Left };
+    use RawInputEvent::{ MouseClick };
+    
+    match e {
+      Render(args)              => render(&mut gl, &args, &resources, &context.sample(), &state.sample()),
+      Input(Press(Mouse(Left))) => sink.send(MouseClick),
+      _                         => ()
     }
+  }
 }
-
