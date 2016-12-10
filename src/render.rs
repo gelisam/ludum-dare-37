@@ -4,6 +4,7 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use graphics::*;
 use graphics::math::{ Matrix2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
@@ -14,8 +15,6 @@ use types::*;
 
 
 fn draw_image(texture: &Texture, transform: Matrix2d, gl: &mut GlGraphics) {
-  use graphics::*;
-  
   unsafe {
     // Sharp pixels please!
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -46,20 +45,29 @@ fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transfor
   }
 }
 
+fn draw_level(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  for j in 0..LEVEL_HEIGHT {
+    let dy = (j as f64) * SPRITE_HEIGHT;
+    for i in 0..LEVEL_WIDTH {
+      let dx = (i as f64) * SPRITE_WIDTH;
+      
+      draw_cell(level_number, [i,j], resources, transform.trans(dx, dy), gl);
+    }
+  }
+}
+
 pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resources, gl: &mut GlGraphics) {
-  use graphics::*;
-  
   gl.draw(args.viewport(), |c, gl| {
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
     let transform = c.transform.scale(5.0, 5.0);
-    draw_cell(state.level_number, [0,0], resources, transform, gl);
+    draw_level(state.level_number, resources, transform, gl);
     
-    for message in state.message {
-      // Fade to white to make the text more readable
-      rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-      
-      draw_text(message, &resources.big_font, c.transform, gl);
-    }
+    //for message in state.message {
+    //  // Fade to white to make the text more readable
+    //  rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+    //  
+    //  draw_text(message, &resources.big_font, c.transform, gl);
+    //}
   });
 }

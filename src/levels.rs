@@ -55,7 +55,7 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
     let (u1, u2) = {
       let x_index = pos[0] as usize;
       let y_index = pos[1] as usize;
-      let char_index = ASCII_MAP_OFFSET + x_index*ASCII_MAP_WIDTH + y_index*CELL_WIDTH;
+      let char_index = ASCII_MAP_OFFSET + y_index*ASCII_MAP_WIDTH + x_index*CELL_WIDTH;
       ( level_description.ascii_map.as_bytes()[char_index]
       , level_description.ascii_map.as_bytes()[char_index + 1]
       )

@@ -3,6 +3,9 @@ use opengl_graphics::Texture;
 use font::*;
 
 
+pub const SPRITE_WIDTH:  f64 = 10.0;
+pub const SPRITE_HEIGHT: f64 = 10.0;
+
 pub struct Resources {
   pub big_font:      Font,
   pub small_font:    Font,

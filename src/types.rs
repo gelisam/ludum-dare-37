@@ -1,5 +1,6 @@
 use graphics::math::Vec2d;
 
+
 pub type Dir = Vec2d<i8>;
 pub const UP:    Dir = [ 0,-1];
 pub const LEFT:  Dir = [-1, 0];
