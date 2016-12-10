@@ -11,12 +11,12 @@ use piston::window::WindowSettings;
 
 mod font;
 mod game;
+mod render;
 mod resources;
 mod types;
-mod dom;
 
-use dom::*;
 use game::*;
+use render::*;
 use resources::*;
 use types::*;
 
