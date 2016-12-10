@@ -1,5 +1,6 @@
 use graphics::math::Vec2d;
 
+pub type Message = &'static str;
 pub type Pos = Vec2d<i8>;
 pub type Dir = Vec2d<i8>;
 pub type Seconds = f64;
@@ -14,7 +15,7 @@ pub enum RawInputEvent {
 pub struct State {
   pub time: Seconds,
   
-  pub message: Option<&'static str>,
+  pub message: Option<Message>,
   pub square_rotation: Radians,
 }
 
