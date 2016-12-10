@@ -20,7 +20,19 @@ struct Context {
 }
 
 
-fn frp_network() -> Signal<Context> {
+#[derive(Clone)]
+enum RawInputEvent {
+  MouseClick,
+}
+
+
+#[derive(Clone)]
+struct State {
+  is_square_activated: bool,
+}
+
+
+fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Signal<State>) {
   let seconds: Signal<f64> = {
     let time: Signal<time::Tm> = now();
     let t0 = time.sample();
@@ -28,24 +40,35 @@ fn frp_network() -> Signal<Context> {
   };
 
   let square_rotation = lift!(|t| 2.0 * t, &seconds); // Rotate 2 radians per second.
+  let is_square_activated = raw_input_events.fold(false, |b, _| !b); // Toggle on each click.
 
-  lift!(|r|
+  let context = lift!(|r|
     Context {
       square_rotation: r,
     },
     &square_rotation
-  )
+  );
+  let state = lift!(|a|
+    State {
+      is_square_activated: a,
+    },
+    &is_square_activated
+  );
+
+  (context, state)
 }
 
 
-fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Context) {
+fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Context, state: &State) {
   use graphics::*;
 
-  const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-  const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+  const GREEN:  [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+  const RED:    [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+  const REDDER: [f32; 4] = [1.0, 0.5, 0.5, 1.0];
 
   let square = rectangle::square(0.0, 0.0, 50.0);
   let rotation = context.square_rotation;
+  let active = state.is_square_activated;
   let (x, y) = ((args.width / 2) as f64,
                 (args.height / 2) as f64);
 
@@ -58,7 +81,7 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Conte
                                .trans(-25.0, -25.0);
 
     // Draw a box rotating around the middle of the screen.
-    rectangle(RED, square, transform, gl);
+    rectangle(if active {REDDER} else {RED}, square, transform, gl);
   });
 }
 
@@ -77,14 +100,20 @@ fn main() {
       .unwrap();
     let mut gl = GlGraphics::new(opengl);
 
-    let context = frp_network();
+    let sink = Sink::new();
+    let (context, state) = frp_network(&sink.stream());
 
     let mut events = window.events();
     while let Some(e) = events.next(&mut window) {
-      use piston::input::Event::{ Render };
+      use piston::input::Button::{ Mouse };
+      use piston::input::Event::{ Render, Input };
+      use piston::input::Input::{ Press };
+      use piston::input::MouseButton::{ Left };
+      use RawInputEvent::{ MouseClick };
 
       match e {
-        Render(args) => render(&mut gl, &args, &context.sample()),
+        Render(args)              => render(&mut gl, &args, &context.sample(), &state.sample()),
+        Input(Press(Mouse(Left))) => sink.send(MouseClick),
         _            => ()
       }
     }
