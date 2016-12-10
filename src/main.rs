@@ -1,26 +1,24 @@
-#[macro_use] extern crate carboxyl;
-extern crate carboxyl_time;
 extern crate gl;
 extern crate glutin_window;
 extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
-use carboxyl::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
 use piston::window::WindowSettings;
 
 mod font;
-mod frp;
+mod game;
 mod resources;
 mod types;
 mod dom;
 
-use frp::*;
-use resources::*;
 use dom::*;
+use game::*;
+use resources::*;
+use types::*;
 
 
 fn main() {
@@ -36,23 +34,22 @@ fn main() {
       .exit_on_esc(true)
       .build()
       .unwrap();
-  let mut gl = GlGraphics::new(opengl);
+  let mut state = initial_state();
   let resources = load_resources();
-  
-  let sink = Sink::new();
-  let (context, state) = frp_network(&sink.stream());
+  let mut gl = GlGraphics::new(opengl);
   
   let mut events = window.events();
   while let Some(e) = events.next(&mut window) {
     use piston::input::Button::{ Mouse };
-    use piston::input::Event::{ Render, Input };
+    use piston::input::Event::{ Render, Input, Update };
     use piston::input::Input::{ Press };
     use piston::input::MouseButton::{ Left };
-    use types::RawInputEvent::{ MouseClick };
+    use types::RawInputEvent::{ MouseClick, TimePasses };
     
     match e {
-      Render(args)              => render(&mut gl, &args, &resources, &context.sample(), &state.sample()),
-      Input(Press(Mouse(Left))) => sink.send(MouseClick),
+      Render(args)              => render(&mut state, &mut gl, &args, &resources),
+      Input(Press(Mouse(Left))) => update(&mut state, MouseClick),
+      Update(args)              => update(&mut state, TimePasses(args.dt)),
       _                         => ()
     }
   }

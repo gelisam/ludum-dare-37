@@ -1,4 +1,3 @@
-extern crate carboxyl_time;
 extern crate gl;
 extern crate glutin_window;
 extern crate graphics;
@@ -15,10 +14,10 @@ use types::*;
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const COVER: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
 
-pub fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
+pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources) {
   use graphics::*;
   
-  let rotation = context.square_rotation;
+  let rotation = state.square_rotation;
   let active = state.is_square_activated;
   let (x, y) = ( (args.width / 2) as f64
                , (args.height / 2) as f64
