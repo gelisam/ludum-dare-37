@@ -30,8 +30,23 @@ pub struct State {
 pub fn initial_state() -> State {
   State {
     time: 0.0,
-    message: Some("I've Seen This Room\n\
-                   Twice Already"),
+    message: Some(".............................................\n\
+                   .                                           .\n\
+                   .            I've Seen This Room            .\n\
+                   .               Twice Already               .\n\
+                   .                                           .\n\
+                   .                                           .\n\
+                   .                                           .\n\
+                   .                                           .\n\
+                   .    made in 48 hours by Samuel Gélineau    .\n\
+                   .             for Ludum Dare 37             .\n\
+                   .                                           .\n\
+                   .              theme: One Room              .\n\
+                   .                                           .\n\
+                   .                                           .\n\
+                   .        press any arrow key to begin       .\n\
+                   .                                           .\n\
+                   ............................................."),
     level_number: 0,
   }
 }
