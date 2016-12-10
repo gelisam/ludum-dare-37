@@ -48,10 +48,10 @@ fn main() {
     
     match e {
       Render(args)                  => render(&mut state, &mut gl, &args, &resources),
-      Input(Press(Keyboard(Up)))    => update(&mut state, Move([ 0,-1])),
-      Input(Press(Keyboard(Left)))  => update(&mut state, Move([-1, 0])),
-      Input(Press(Keyboard(Down)))  => update(&mut state, Move([ 0, 1])),
-      Input(Press(Keyboard(Right))) => update(&mut state, Move([ 1, 0])),
+      Input(Press(Keyboard(Up)))    => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(Left)))  => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(Down)))  => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(Right))) => update(&mut state, Move(RIGHT)),
       Update(args)                  => update(&mut state, TimePasses(args.dt)),
       _                             => ()
     }

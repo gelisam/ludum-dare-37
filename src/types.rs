@@ -1,8 +1,13 @@
 use graphics::math::Vec2d;
 
+pub type Dir = Vec2d<i8>;
+pub const UP:    Dir = [ 0,-1];
+pub const LEFT:  Dir = [-1, 0];
+pub const DOWN:  Dir = [ 0, 1];
+pub const RIGHT: Dir = [ 1, 0];
+
 pub type Message = &'static str;
 pub type Pos = Vec2d<i8>;
-pub type Dir = Vec2d<i8>;
 pub type Seconds = f64;
 pub type Radians = f64;
 
