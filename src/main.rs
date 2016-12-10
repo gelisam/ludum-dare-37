@@ -10,7 +10,7 @@ extern crate time;
 use carboxyl::*;
 use carboxyl_time::*;
 use glutin_window::GlutinWindow as Window;
-use opengl_graphics::{ GlGraphics, OpenGL };
+use opengl_graphics::{ GlGraphics, OpenGL, Texture };
 use piston::event_loop::*;
 use piston::window::WindowSettings;
 
@@ -64,30 +64,40 @@ fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Si
 
 
 struct Resources {
-  big_font:      opengl_graphics::Texture,
-  //floor:         opengl_graphics::Texture,
-  //goal_top:      opengl_graphics::Texture,
-  //goal:          opengl_graphics::Texture,
-  //inventory_key: opengl_graphics::Texture,
-  //key:           opengl_graphics::Texture,
-  //locked:        opengl_graphics::Texture,
-  player:        opengl_graphics::Texture,
-  //sign:          opengl_graphics::Texture,
-  //small_font:    opengl_graphics::Texture,
-  //spiny:         opengl_graphics::Texture,
-  //start_top:     opengl_graphics::Texture,
-  //start:         opengl_graphics::Texture,
-  //unlocked_top:  opengl_graphics::Texture,
-  //unlocked:      opengl_graphics::Texture,
-  //wall:          opengl_graphics::Texture,
+  big_font:      Font,
+  small_font:    Font,
+  //floor:         Texture,
+  //goal_top:      Texture,
+  //goal:          Texture,
+  //inventory_key: Texture,
+  //key:           Texture,
+  //locked:        Texture,
+  player:        Texture,
+  //sign:          Texture,
+  //spiny:         Texture,
+  //start_top:     Texture,
+  //start:         Texture,
+  //unlocked_top:  Texture,
+  //unlocked:      Texture,
+  //wall:          Texture,
 }
 
 fn load_resources() -> Resources {
-  use opengl_graphics::Texture;
   use std::path::Path;
   
   Resources {
-    big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
+    big_font:      Font {
+                     texture: Texture::from_path(Path::new("images/big-font.png")).unwrap(),
+                     zeroth_char: '\x00', grid_width: 25,
+                     cell_width:   20.0, cell_height:   20.0,
+                     sprite_width: 10.0, sprite_height: 20.0,
+                   },
+    small_font:    Font {
+                     texture: Texture::from_path(Path::new("images/small-font.png")).unwrap(),
+                     zeroth_char: '-', grid_width: 13,
+                     cell_width:   5.0, cell_height:   5.0,
+                     sprite_width: 5.0, sprite_height: 5.0,
+                   },
     //floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
     //goal_top:      Texture::from_path(Path::new("images/goal-top.png")).unwrap(),
     //goal:          Texture::from_path(Path::new("images/goal.png")).unwrap(),
@@ -96,7 +106,6 @@ fn load_resources() -> Resources {
     //locked:        Texture::from_path(Path::new("images/locked.png")).unwrap(),
     player:        Texture::from_path(Path::new("images/player.png")).unwrap(),
     //sign:          Texture::from_path(Path::new("images/sign.png")).unwrap(),
-    //small_font:    Texture::from_path(Path::new("images/small-font.png")).unwrap(),
     //spiny:         Texture::from_path(Path::new("images/spiny.png")).unwrap(),
     //start_top:     Texture::from_path(Path::new("images/start-top.png")).unwrap(),
     //start:         Texture::from_path(Path::new("images/start.png")).unwrap(),
@@ -140,7 +149,8 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
     if !active {
       // Display the title over the animation
       rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-      draw_big_text("I've Seen This Room\nTwice Already", &resources.big_font, c.transform, gl);
+      draw_text("I've Seen This Room\nTwice Already", &resources.big_font, c.transform, gl);
+      draw_text("1-99", &resources.small_font, transform, gl);
     }
   });
 }

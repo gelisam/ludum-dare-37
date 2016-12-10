@@ -3,25 +3,36 @@ extern crate graphics;
 use opengl_graphics::{ GlGraphics, Texture };
 
 
-pub fn draw_big_text_with_offset(s: &str, texture: &Texture, y_offset: f64, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
+pub struct Font {
+  pub texture: Texture,
+  pub zeroth_char: char, pub grid_width: u8,
+  pub cell_width:   f64, pub cell_height:   f64,
+  pub sprite_width: f64, pub sprite_height: f64,
+}
+
+
+pub fn draw_text(lines: &str, font: &Font, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
   use graphics::draw_state::DrawState;
   use graphics::image::draw_many;
   use graphics::types::{ Rectangle, SourceRectangle };
   
-  let rects: Vec<(Rectangle, SourceRectangle)> = s.chars().enumerate().map(
-        |(i, c)| {
-          let x = c as u8 % 25;
-          let y = c as u8 / 25;
-          let x_offset = i as f64 * 10.0;
-          ([x_offset, y_offset, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])
-        }
-      ).collect();
-  
-  draw_many(&rects, [1.0, 1.0, 1.0, 1.0], texture, &DrawState::default(), transform, gl);
-}
-
-pub fn draw_big_text(s: &str, texture: &Texture, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
-  for (y, line) in s.lines().enumerate() {
-    draw_big_text_with_offset(line, &texture, y as f64 * 20.0, transform, gl);
+  for (line_index, line) in lines.lines().enumerate() {
+    let rects: Vec<(Rectangle, SourceRectangle)> = line.chars().enumerate().map(
+          |(char_index, c)| {
+            let sprite_index = c as u8 - font.zeroth_char as u8;
+            let x_index = sprite_index % 25;
+            let y_index = sprite_index / 25;
+            let x_src = x_index as f64 * font.cell_width;
+            let y_src = y_index as f64 * font.cell_height;
+            let x_dst = char_index as f64 * font.sprite_width;
+            let y_dst = line_index as f64 * font.sprite_height;
+            
+            ( [x_dst, y_dst, font.cell_width, font.cell_height]
+            , [x_src, y_src, font.cell_width, font.cell_height]
+            )
+          }
+        ).collect();
+    
+    draw_many(&rects, [1.0, 1.0, 1.0, 1.0], &font.texture, &DrawState::default(), transform, gl);
   }
 }
