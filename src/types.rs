@@ -7,6 +7,8 @@ pub const DOWN:  Dir = [ 0, 1];
 pub const RIGHT: Dir = [ 1, 0];
 
 pub type Message = &'static str;
+pub type LevelNumber = u8;
+pub type Lifetime = u8;
 pub type Pos = Vec2d<i8>;
 pub type Seconds = f64;
 pub type Radians = f64;
@@ -21,6 +23,7 @@ pub struct State {
   pub time: Seconds,
   
   pub message: Option<Message>,
+  pub level_number: LevelNumber,
   pub square_rotation: Radians,
 }
 
@@ -29,6 +32,7 @@ pub fn initial_state() -> State {
     time: 0.0,
     message: Some("I've Seen This Room\n\
                    Twice Already"),
+    level_number: 0,
     square_rotation: 0.0,
   }
 }

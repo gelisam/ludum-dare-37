@@ -11,6 +11,7 @@ use piston::window::WindowSettings;
 
 mod font;
 mod game;
+mod levels;
 mod render;
 mod resources;
 mod types;

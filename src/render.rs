@@ -8,6 +8,7 @@ use graphics::math::{ Matrix2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
 use font::*;
+use levels::*;
 use resources::*;
 use types::*;
 
@@ -29,6 +30,22 @@ fn draw_image(texture: &Texture, transform: Matrix2d, gl: &mut GlGraphics) {
   }
 }
 
+fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  use levels::CellDescription::*;
+  
+  match cell_at(level_number, pos) {
+    Floor      => draw_image(&resource.floor,    transform, gl),
+    LeftDoor   => draw_image(&resource.start,    transform, gl),
+    RigthDoor  => draw_image(&resource.goal,     transform, gl),
+    Key(_)     => draw_image(&resource.key,      transform, gl),
+    LockedDoor => draw_image(&resource.locked,   transform, gl),
+    OpenedDoor => draw_image(&resource.unlocked, transform, gl),
+    Sign(_)    => draw_image(&resource.sign,     transform, gl),
+    Spiny(_)   => draw_image(&resource.spiny,    transform, gl),
+    Wall       => draw_image(&resource.wall,     transform, gl),
+  }
+}
+
 pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resources, gl: &mut GlGraphics) {
   use graphics::*;
   
@@ -47,8 +64,8 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
         .scale(5.0, 5.0)
         .trans(-5.0, -5.0);
     
-    // Draw the player rotating around the middle of the screen.
-    draw_image(&resources.player, transform, gl);
+    // Draw something rotating around the middle of the screen.
+    draw_cell(state.level_number, [0,0], resources, transform, gl);
     
     for message in state.message {
       // Display the title over the animation
