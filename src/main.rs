@@ -82,7 +82,7 @@ struct Resources {
 fn load_resources() -> Resources {
   use opengl_graphics::Texture;
   use std::path::Path;
-  
+
   Resources {
     //big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
     //floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
@@ -111,7 +111,6 @@ const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
 
-  let square = rectangle::square(0.0, 0.0, 10.0);
   let rotation = context.square_rotation;
   let active = state.is_square_activated;
   let (x, y) = ((args.width / 2) as f64,
@@ -130,9 +129,14 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
                                .rot_rad(rotation)
                                .scale(5.0, 5.0)
                                .trans(-5.0, -5.0);
-    
+
     // Draw the player rotating around the middle of the screen.
     image(&resources.player, transform, gl);
+
+    if active {
+      // Cover the whole thing with a semi-transparent white layer
+      rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+    }
   });
 }
 
