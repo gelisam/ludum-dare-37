@@ -61,7 +61,7 @@ fn frp_network(raw_input_events: &Stream<RawInputEvent>) -> (Signal<Context>, Si
 
 
 struct Resources {
-  //big_font:      opengl_graphics::Texture,
+  big_font:      opengl_graphics::Texture,
   //floor:         opengl_graphics::Texture,
   //goal_top:      opengl_graphics::Texture,
   //goal:          opengl_graphics::Texture,
@@ -84,7 +84,7 @@ fn load_resources() -> Resources {
   use std::path::Path;
 
   Resources {
-    //big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
+    big_font:      Texture::from_path(Path::new("images/big-font.png")).unwrap(),
     //floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
     //goal_top:      Texture::from_path(Path::new("images/goal-top.png")).unwrap(),
     //goal:          Texture::from_path(Path::new("images/goal.png")).unwrap(),
@@ -106,7 +106,23 @@ fn load_resources() -> Resources {
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const COVER: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
-const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+
+fn draw_big_text(s: &str, resources: &Resources, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
+  use graphics::draw_state::DrawState;
+  use graphics::image::draw_many;
+  use graphics::types::{ Rectangle, SourceRectangle };
+
+  let rects2: Vec<(Rectangle, SourceRectangle)> = s.chars().enumerate().map(
+    |(i, c)| {
+      let x = c as u8 % 25;
+      let y = c as u8 / 25;
+      ([i as f64 * 10.0, 0.0, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])
+    }
+  ).collect();
+  // &text.chars().enumerate().map(|(i, c)| ([0.0, 0.0, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])).collect(),
+
+  draw_many(&rects2, WHITE, &resources.big_font, &DrawState::default(), transform, gl);
+}
 
 fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
@@ -133,9 +149,10 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
     // Draw the player rotating around the middle of the screen.
     image(&resources.player, transform, gl);
 
-    if active {
-      // Cover the whole thing with a semi-transparent white layer
+    if !active {
+      // Display the title over the animation
       rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
+      draw_big_text("I've Seen This Room Twice Already", &resources, c.transform, gl);
     }
   });
 }
