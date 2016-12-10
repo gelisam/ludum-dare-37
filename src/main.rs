@@ -104,13 +104,12 @@ fn load_resources() -> Resources {
 }
 
 
+const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+const COVER: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
+const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+
 fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
-
-  const GREEN:  [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-  const RED:    [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-
-  let image  = graphics::image::Image::new().rect(graphics::rectangle::square(0.0, 0.0, 10.0));
 
   let square = rectangle::square(0.0, 0.0, 10.0);
   let rotation = context.square_rotation;
@@ -125,19 +124,15 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
     }
 
     // Clear the screen.
-    clear(GREEN, gl);
+    clear(WHITE, gl);
 
     let transform = c.transform.trans(x, y)
                                .rot_rad(rotation)
                                .scale(5.0, 5.0)
                                .trans(-5.0, -5.0);
     
-    // Draw something rotating around the middle of the screen.
-    if active {
-      image.draw(&resources.player, &DrawState::default(), transform, gl);
-    } else {
-      rectangle(RED, square, transform, gl);
-    }
+    // Draw the player rotating around the middle of the screen.
+    image(&resources.player, transform, gl);
   });
 }
 
