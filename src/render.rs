@@ -52,9 +52,9 @@ fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transfor
 
 fn draw_level(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   for j in 0..LEVEL_HEIGHT {
-    let dy = (j as f64) * SPRITE_HEIGHT;
+    let dy = j as f64 * SPRITE_HEIGHT as f64;
     for i in 0..LEVEL_WIDTH {
-      let dx = (i as f64) * SPRITE_WIDTH;
+      let dx = i as f64 * SPRITE_WIDTH as f64;
       
       draw_cell(level_number, [i,j], resources, transform.trans(dx, dy), gl);
     }
