@@ -38,7 +38,7 @@ pub fn initial_state() -> State {
                    .                                           .\n\
                    .                                           .\n\
                    .                                           .\n\
-                   .    made in 48 hours by Samuel Gélineau    .\n\
+                   .    made in 72 hours by Samuel Gélineau    .\n\
                    .             for Ludum Dare 37             .\n\
                    .                                           .\n\
                    .              theme: One Room              .\n\
