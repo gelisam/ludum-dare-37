@@ -7,14 +7,15 @@ pub enum RawInputEvent {
 pub struct State {
   pub time: f64,
   
-  pub is_square_activated: bool,
+  pub message: Option<&'static str>,
   pub square_rotation: f64,
 }
 
 pub fn initial_state() -> State {
   State {
     time: 0.0,
-    is_square_activated: false,
+    message: Some("I've Seen This Room\n\
+                   Twice Already"),
     square_rotation: 0.0,
   }
 }

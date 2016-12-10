@@ -15,7 +15,6 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
   use graphics::*;
   
   let rotation = state.square_rotation;
-  let active = state.is_square_activated;
   let (x, y) = ( (args.width / 2) as f64
                , (args.height / 2) as f64
                );
@@ -38,11 +37,10 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
     // Draw the player rotating around the middle of the screen.
     image(&resources.player, transform, gl);
     
-    if !active {
+    for message in state.message {
       // Display the title over the animation
       rectangle([1.0, 1.0, 1.0, 0.5], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-      draw_text("I've Seen This Room\n\
-                 Twice Already", &resources.big_font, c.transform, gl);
+      draw_text(message, &resources.big_font, c.transform, gl);
       draw_text("1-99", &resources.small_font, transform, gl);
     }
   });
