@@ -6,6 +6,7 @@ authors = ["Samuel Gélineau <gelisam+github@gmail.com>"]
 [dependencies]
 carboxyl = "0.2"
 carboxyl_time = "0.0.2"
+gl = "0.6.1"
 piston = "0.27.0"
 piston2d-graphics = "0.19.0"
 piston2d-opengl_graphics = "0.36.0"

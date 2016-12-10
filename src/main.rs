@@ -1,5 +1,6 @@
 #[macro_use] extern crate carboxyl;
 extern crate carboxyl_time;
+extern crate gl;
 extern crate glutin_window;
 extern crate graphics;
 extern crate opengl_graphics;
@@ -64,24 +65,36 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, context: &Conte
 
   const GREEN:  [f32; 4] = [0.0, 1.0, 0.0, 1.0];
   const RED:    [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-  const REDDER: [f32; 4] = [1.0, 0.5, 0.5, 1.0];
 
-  let square = rectangle::square(0.0, 0.0, 50.0);
+  let image  = graphics::image::Image::new().rect(graphics::rectangle::square(0.0, 0.0, 10.0));
+  let texture = opengl_graphics::Texture::from_path(std::path::Path::new("images/player.png")).unwrap();
+
+  let square = rectangle::square(0.0, 0.0, 10.0);
   let rotation = context.square_rotation;
   let active = state.is_square_activated;
   let (x, y) = ((args.width / 2) as f64,
                 (args.height / 2) as f64);
 
   gl.draw(args.viewport(), |c, gl| {
+    // Sharp pixels please!
+    unsafe {
+      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    }
+
     // Clear the screen.
     clear(GREEN, gl);
 
     let transform = c.transform.trans(x, y)
                                .rot_rad(rotation)
-                               .trans(-25.0, -25.0);
-
-    // Draw a box rotating around the middle of the screen.
-    rectangle(if active {REDDER} else {RED}, square, transform, gl);
+                               .scale(5.0, 5.0)
+                               .trans(-5.0, -5.0);
+    
+    // Draw something rotating around the middle of the screen.
+    if active {
+      image.draw(&texture, &DrawState::default(), transform, gl);
+    } else {
+      rectangle(RED, square, transform, gl);
+    }
   });
 }
 
