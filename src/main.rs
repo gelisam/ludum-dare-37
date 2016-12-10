@@ -149,7 +149,8 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
     if !active {
       // Display the title over the animation
       rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-      draw_text("I've Seen This Room\nTwice Already", &resources.big_font, c.transform, gl);
+      draw_text("I've Seen This Room\n\
+                 Twice Already", &resources.big_font, c.transform, gl);
       draw_text("1-99", &resources.small_font, transform, gl);
     }
   });
