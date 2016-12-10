@@ -20,11 +20,6 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
                );
   
   gl.draw(args.viewport(), |c, gl| {
-    // Sharp pixels please!
-    unsafe {
-      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    }
-    
     // Clear the screen.
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
@@ -35,7 +30,16 @@ pub fn render(state: &State, gl: &mut GlGraphics, args: &piston::input::RenderAr
         .trans(-5.0, -5.0);
     
     // Draw the player rotating around the middle of the screen.
+    unsafe {
+      // Sharp pixels please!
+      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    }
     image(&resources.player, transform, gl);
+    unsafe {
+      // Sometimes the pixels still aren't sharp. There is no logical reason why setting this again after the
+      // image has already been drawn should help, but it does!
+      gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    }
     
     for message in state.message {
       // Display the title over the animation
