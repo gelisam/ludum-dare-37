@@ -18,6 +18,9 @@ fn draw_image(texture: &Texture, transform: Matrix2d, gl: &mut GlGraphics) {
   unsafe {
     // Sharp pixels please!
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    
+    // No over-saturation please!
+    gl::Disable(gl::FRAMEBUFFER_SRGB);
   }
   
   image(texture, transform, gl);
