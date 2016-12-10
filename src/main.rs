@@ -14,6 +14,9 @@ use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
 use piston::window::WindowSettings;
 
+mod font;
+use font::*;
+
 
 #[derive(Clone)]
 struct Context {
@@ -107,29 +110,6 @@ fn load_resources() -> Resources {
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const COVER: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
 
-fn draw_big_text_with_offset(s: &str, resources: &Resources, y_offset: f64, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
-  use graphics::draw_state::DrawState;
-  use graphics::image::draw_many;
-  use graphics::types::{ Rectangle, SourceRectangle };
-  
-  let rects: Vec<(Rectangle, SourceRectangle)> = s.chars().enumerate().map(
-        |(i, c)| {
-          let x = c as u8 % 25;
-          let y = c as u8 / 25;
-          let x_offset = i as f64 * 10.0;
-          ([x_offset, y_offset, 20.0, 20.0], [x as f64 * 20.0, y as f64 * 20.0, 20.0, 20.0])
-        }
-      ).collect();
-  
-  draw_many(&rects, WHITE, &resources.big_font, &DrawState::default(), transform, gl);
-}
-
-fn draw_big_text(s: &str, resources: &Resources, transform: graphics::math::Matrix2d, gl: &mut GlGraphics) {
-  for (y, line) in s.lines().enumerate() {
-    draw_big_text_with_offset(line, &resources, y as f64 * 20.0, transform, gl);
-  }
-}
-
 fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Resources, context: &Context, state: &State) {
   use graphics::*;
   
@@ -160,7 +140,7 @@ fn render(gl: &mut GlGraphics, args: &piston::input::RenderArgs, resources: &Res
     if !active {
       // Display the title over the animation
       rectangle(COVER, [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
-      draw_big_text("I've Seen This Room\nTwice Already", &resources, c.transform, gl);
+      draw_big_text("I've Seen This Room\nTwice Already", &resources.big_font, c.transform, gl);
     }
   });
 }
