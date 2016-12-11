@@ -90,6 +90,16 @@ pub enum AnimatedPos {
   MovingInUntil(LevelNumber, LevelNumber, Seconds),
 }
 
+pub fn moving_out(level_src: LevelNumber, level_dst: LevelNumber, t: Seconds) -> AnimatedPos {
+  AnimatedPos::MovingOutSince(level_src, level_dst, t)
+}
+
+pub fn moving_in(level_src: LevelNumber, level_dst: LevelNumber, t: Seconds) -> AnimatedPos {
+  AnimatedPos::MovingInUntil(level_src, level_dst, t + PLAYER_MOVE_DURATION)
+}
+
+
+
 pub struct MovingPos {
   pub pos: Pos,
   pub dir: Dir,

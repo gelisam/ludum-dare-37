@@ -91,14 +91,14 @@ fn execute_action(state: &mut State, action: Action) {
       };
       state.corpses.push_back(corpse);
       
-      state.player.pos = MovingInUntil(state.level_number - 1, state.level_number, state.time);
+      state.player.pos = moving_in(state.level_number - 1, state.level_number, state.time);
     },
     
     PreviousLevel => {
-      state.player.pos = MovingOutSince(state.level_number, state.level_number - 1, state.time);
+      state.player.pos = moving_out(state.level_number, state.level_number - 1, state.time);
     },
     NextLevel => {
-      state.player.pos = MovingOutSince(state.level_number, state.level_number + 1, state.time);
+      state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
     },
     
     Pause => {
