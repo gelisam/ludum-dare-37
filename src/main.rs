@@ -51,35 +51,35 @@ fn main() {
     use types::RawInputEvent::{ TimePasses, Move, Pause, AnyKey };
     
     match e {
-      Render(args)                  => render(&mut state, &args, &resources, &mut gl),
-      Update(args)                  => update(&mut state, TimePasses(args.dt)),
+      Render(args)                    => render(&mut state, &args, &resources, &mut gl),
+      Update(args)                    => update(&mut state, TimePasses(args.dt)),
       
       // arrow keys
-      Input(Press(Keyboard(Up)))    => update(&mut state, Move(UP)),
-      Input(Press(Keyboard(Left)))  => update(&mut state, Move(LEFT)),
-      Input(Press(Keyboard(Down)))  => update(&mut state, Move(DOWN)),
-      Input(Press(Keyboard(Right))) => update(&mut state, Move(RIGHT)),
+      Input(Press(Keyboard(Up)))      => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(Left)))    => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(Down)))    => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(Right)))   => update(&mut state, Move(RIGHT)),
       
       // WASD controls
-      Input(Press(Keyboard(W)))     => update(&mut state, Move(UP)),
-      Input(Press(Keyboard(A)))     => update(&mut state, Move(LEFT)),
-      Input(Press(Keyboard(S)))     => update(&mut state, Move(DOWN)),
-      Input(Press(Keyboard(D)))     => update(&mut state, Move(RIGHT)),
+      Input(Press(Keyboard(W)))       => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(A)))       => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(S)))       => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(D)))       => update(&mut state, Move(RIGHT)),
       
       // vim controls
-      Input(Press(Keyboard(K)))     => update(&mut state, Move(UP)),
-      Input(Press(Keyboard(H)))     => update(&mut state, Move(LEFT)),
-      Input(Press(Keyboard(J)))     => update(&mut state, Move(DOWN)),
-      Input(Press(Keyboard(L)))     => update(&mut state, Move(RIGHT)),
+      Input(Press(Keyboard(K)))       => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(H)))       => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(J)))       => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(L)))       => update(&mut state, Move(RIGHT)),
       
       // pause
-      Input(Press(Keyboard(P)))     => update(&mut state, Pause),
-      Input(Press(Keyboard(Space))) => update(&mut state, Pause),
+      Input(Release(Keyboard(P)))     => update(&mut state, Pause),
+      Input(Release(Keyboard(Space))) => update(&mut state, Pause),
       
       // unpause
-      Input(Release(Keyboard(_)))   => update(&mut state, AnyKey),
+      Input(Release(Keyboard(_)))     => update(&mut state, AnyKey),
       
-      _                             => ()
+      _                               => ()
     }
   }
 }
