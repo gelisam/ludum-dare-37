@@ -26,7 +26,7 @@ pub const LEVELS: [LevelDescription; 1] = [
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD##      >>>>  ##.\
+                .LD        >>>>  ##.\
                 .##  ^^        ^^##.\
                 .##  ##  S0    ####.\
                 .##>>            ##.\

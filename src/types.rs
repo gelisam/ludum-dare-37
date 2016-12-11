@@ -1,4 +1,5 @@
 use graphics::math::Vec2d;
+use graphics::types::Rectangle;
 
 
 pub type Dir = Vec2d<i8>;
@@ -20,6 +21,7 @@ pub const SPINY_HALF_MOVE_DURATION: f64 = SPINY_MOVE_DURATION / 2.0;
 
 pub type Pos = Vec2d<i8>;
 pub type FPos = Vec2d<f64>;
+pub type FRect = Rectangle<f64>;
 pub type Seconds = f64;
 
 pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) -> FPos {
@@ -29,6 +31,11 @@ pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) ->
   let y = pos[1] as f64 + dt * speed * dir[1] as f64;
   
   [x,y]
+}
+
+pub fn compute_f_rect(f_pos: FPos) -> FRect {
+  // all sprites are 1 cell by 1 cell
+  [f_pos[0], f_pos[1], 1.0, 1.0]
 }
 
 
@@ -51,6 +58,7 @@ pub enum RawInputEvent {
 pub enum Action {
   Move(Pos, Dir),
   ReadSign(Message),
+  Die(FPos),
   Pause, Unpause,
 }
 

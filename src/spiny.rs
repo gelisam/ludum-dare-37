@@ -5,6 +5,11 @@ use levels::*;
 use types::*;
 
 
+pub fn compute_spiny_f_pos(spiny: &MovingPos, t0: Seconds, t: Seconds) -> FPos {
+  compute_f_pos(spiny.pos, spiny.dir, SPINY_SPEED, t0, t)
+}
+
+
 fn should_bounce(
   spiny: &MovingPos,
   spinies_src: &HashMap<Pos, Dir>, // all the spinies, accessible by src.

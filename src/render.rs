@@ -84,7 +84,7 @@ fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform:
 
 
 fn draw_player(player: &Player, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  draw_sprite(&resources.player, compute_player_f_pos(player, t), transform, gl);
+  draw_sprite(&resources.player, compute_player_f_pos(&player.pos, t), transform, gl);
 }
 
 fn draw_spiny(spiny: &MovingPos, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {

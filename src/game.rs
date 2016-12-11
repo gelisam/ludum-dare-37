@@ -1,3 +1,5 @@
+use graphics::math::*;
+
 use player::*;
 use spiny::*;
 use state::*;
@@ -5,6 +7,21 @@ use types::*;
 use types::RawInputEvent::*;
 use types::AnimatedPos::*;
 
+
+fn should_die(player: &AnimatedPos, spinies: &Vec<MovingPos>, t0: Seconds, t: Seconds) -> Option<Action> {
+  let player_pos = compute_player_f_pos(player, t);
+  let player_rect = compute_f_rect(player_pos);
+  for spiny in spinies.iter() {
+    let spiny_pos = compute_spiny_f_pos(spiny, t0, t);
+    let spiny_rect = compute_f_rect(spiny_pos);
+    
+    if let Some(_) = overlap_rectangle(player_rect, spiny_rect) {
+      return Some(Action::Die(player_pos));
+    }
+  }
+  
+  None
+}
 
 fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> Option<Action> {
   use types::Action::*;
@@ -38,7 +55,9 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           let t = state.time;
           
           update_spinies(&mut state.spinies, state.level_number, &mut state.spinies_moving_since, t);
-          update_player(&mut state.player, state.level_number, t)
+          let player_action = update_player(&mut state.player, state.level_number, t);
+          
+          should_die(&state.player.pos, &state.spinies, state.spinies_moving_since, t).or(player_action)
         },
         
         PressUp    => initiate_move(&mut state.player, state.level_number, UP   ),
@@ -63,6 +82,10 @@ fn execute_action(state: &mut State, action: Action) {
     ReadSign(message) => {
       state.message = Some(message);
     },
+    Die(_) => {
+      state.player.pos = MovingSince([-1,1], [1,0], state.time);
+    },
+    
     Pause => {
       state.message = Some(".............................................\n\
                             .                                           .\n\
