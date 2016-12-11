@@ -82,12 +82,12 @@ fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform:
 }
 
 
-fn draw_player(player: &AnimatedPos, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_player(player: &Player, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use types::AnimatedPos::*;
   
-  let (pos, dir, dt) = match player {
-    &Idle(pos)                 => (pos, [0, 0], 0.0),
-    &MovingSince(pos, dir, t0) => (pos, dir, t - t0),
+  let (pos, dir, dt) = match player.pos {
+    Idle(pos)                 => (pos, [0, 0], 0.0),
+    MovingSince(pos, dir, t0) => (pos, dir, t - t0),
   };
   
   let x = pos[0] as f64 + dt * PLAYER_SPEED * dir[0] as f64;

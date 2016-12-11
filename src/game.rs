@@ -41,9 +41,9 @@ fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Acti
   }
 }
 
-fn initiate_move(state: &mut State, dir: Dir) -> Option<Action> {
-  match state.player {
-    Idle(pos)       => try_move_action(state.level_number, pos, dir),
+fn initiate_move(player: &mut Player, level_number: LevelNumber, dir: Dir) -> Option<Action> {
+  match player.pos {
+    Idle(pos)       => try_move_action(level_number, pos, dir),
     MovingSince(..) => None,
   }
 }
@@ -62,28 +62,28 @@ fn release_direction(is_pressed: &mut bool) {
   *is_pressed = false;
 }
 
-fn update_player(state: &mut State, t: Seconds) -> Option<Action> {
-  if let MovingSince(pos, dir, t0) = state.player {
+fn update_player(player: &mut Player, level_number: LevelNumber, t: Seconds) -> Option<Action> {
+  if let MovingSince(pos, dir, t0) = player.pos {
     if t >= t0 + PLAYER_MOVE_DURATION {
-      state.player = Idle(add(pos, dir));
+      player.pos = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.
-      if state.buffered_dir == Some(UP)    { return initiate_move(state, UP);    }
-      if state.buffered_dir == Some(LEFT)  { return initiate_move(state, LEFT);  }
-      if state.buffered_dir == Some(DOWN)  { return initiate_move(state, DOWN);  }
-      if state.buffered_dir == Some(RIGHT) { return initiate_move(state, RIGHT); }
+      if player.buffered_dir == Some(UP)    { return initiate_move(player, level_number, UP);    }
+      if player.buffered_dir == Some(LEFT)  { return initiate_move(player, level_number, LEFT);  }
+      if player.buffered_dir == Some(DOWN)  { return initiate_move(player, level_number, DOWN);  }
+      if player.buffered_dir == Some(RIGHT) { return initiate_move(player, level_number, RIGHT); }
       
       // If the user is holding several keys, favour the most recent one.
-      if state.up_pressed    && state.most_recent_dir == Some(UP)    { return initiate_move(state, UP);    }
-      if state.left_pressed  && state.most_recent_dir == Some(LEFT)  { return initiate_move(state, LEFT);  }
-      if state.down_pressed  && state.most_recent_dir == Some(DOWN)  { return initiate_move(state, DOWN);  }
-      if state.right_pressed && state.most_recent_dir == Some(RIGHT) { return initiate_move(state, RIGHT); }
+      if player.up_pressed    && player.most_recent_dir == Some(UP)    { return initiate_move(player, level_number, UP);    }
+      if player.left_pressed  && player.most_recent_dir == Some(LEFT)  { return initiate_move(player, level_number, LEFT);  }
+      if player.down_pressed  && player.most_recent_dir == Some(DOWN)  { return initiate_move(player, level_number, DOWN);  }
+      if player.right_pressed && player.most_recent_dir == Some(RIGHT) { return initiate_move(player, level_number, RIGHT); }
       
       // Continue moving in one of the pressed directions even if none is the most recent.
-      if state.up_pressed    { return initiate_move(state, UP);    }
-      if state.left_pressed  { return initiate_move(state, LEFT);  }
-      if state.down_pressed  { return initiate_move(state, DOWN);  }
-      if state.right_pressed { return initiate_move(state, RIGHT); }
+      if player.up_pressed    { return initiate_move(player, level_number, UP);    }
+      if player.left_pressed  { return initiate_move(player, level_number, LEFT);  }
+      if player.down_pressed  { return initiate_move(player, level_number, DOWN);  }
+      if player.right_pressed { return initiate_move(player, level_number, RIGHT); }
     }
   }
   
@@ -96,15 +96,15 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
   // Update the key statuses whether the game is paused or not, otherwise the character will keep moving
   // if the user pauses and then releases a key.
   match raw_input_event {
-    PressUp      => press_direction(&mut state.up_pressed,    &mut state.buffered_dir, &mut state.most_recent_dir, UP),
-    PressLeft    => press_direction(&mut state.left_pressed,  &mut state.buffered_dir, &mut state.most_recent_dir, LEFT),
-    PressDown    => press_direction(&mut state.down_pressed,  &mut state.buffered_dir, &mut state.most_recent_dir, DOWN),
-    PressRight   => press_direction(&mut state.right_pressed, &mut state.buffered_dir, &mut state.most_recent_dir, RIGHT),
+    PressUp      => press_direction(&mut state.player.up_pressed,    &mut state.player.buffered_dir, &mut state.player.most_recent_dir, UP),
+    PressLeft    => press_direction(&mut state.player.left_pressed,  &mut state.player.buffered_dir, &mut state.player.most_recent_dir, LEFT),
+    PressDown    => press_direction(&mut state.player.down_pressed,  &mut state.player.buffered_dir, &mut state.player.most_recent_dir, DOWN),
+    PressRight   => press_direction(&mut state.player.right_pressed, &mut state.player.buffered_dir, &mut state.player.most_recent_dir, RIGHT),
     
-    ReleaseUp    => release_direction(&mut state.up_pressed),
-    ReleaseLeft  => release_direction(&mut state.left_pressed),
-    ReleaseDown  => release_direction(&mut state.down_pressed),
-    ReleaseRight => release_direction(&mut state.right_pressed),
+    ReleaseUp    => release_direction(&mut state.player.up_pressed),
+    ReleaseLeft  => release_direction(&mut state.player.left_pressed),
+    ReleaseDown  => release_direction(&mut state.player.down_pressed),
+    ReleaseRight => release_direction(&mut state.player.right_pressed),
     
     _ => {},
   }
@@ -124,13 +124,13 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           for spiny in &mut state.spinies {
             update_spiny(spiny, state.level_number, t);
           }
-          update_player(state, t)
+          update_player(&mut state.player, state.level_number, t)
         },
         
-        PressUp    => initiate_move(state, UP   ),
-        PressLeft  => initiate_move(state, LEFT ),
-        PressDown  => initiate_move(state, DOWN ),
-        PressRight => initiate_move(state, RIGHT),
+        PressUp    => initiate_move(&mut state.player, state.level_number, UP   ),
+        PressLeft  => initiate_move(&mut state.player, state.level_number, LEFT ),
+        PressDown  => initiate_move(&mut state.player, state.level_number, DOWN ),
+        PressRight => initiate_move(&mut state.player, state.level_number, RIGHT),
         
         PressPause => Some(Pause),
         _          => None,
@@ -143,8 +143,8 @@ fn execute_action(state: &mut State, action: Action) {
   
   match action {
     Move(pos, dir) => {
-      state.buffered_dir = None;
-      state.player = MovingSince(pos, dir, state.time);
+      state.player.buffered_dir = None;
+      state.player.pos = MovingSince(pos, dir, state.time);
     },
     ReadSign(message) => {
       state.message = Some(message);

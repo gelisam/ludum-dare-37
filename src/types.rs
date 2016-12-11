@@ -36,20 +36,23 @@ pub enum AnimatedPos {
   MovingSince(Pos, Dir, Seconds),
 }
 
-pub struct State {
-  pub time: Seconds,
-  
-  pub message: Option<Message>,
-  pub level_number: LevelNumber,
-  
+pub struct Player {
   pub up_pressed:    bool,
   pub left_pressed:  bool,
   pub down_pressed:  bool,
   pub right_pressed: bool,
   pub most_recent_dir: Option<Dir>, // favour the last key if many are pressed
   pub buffered_dir:    Option<Dir>, // a key tap which hasn't been honored yet
-  pub player: AnimatedPos,
+  pub pos: AnimatedPos,
+}
+
+pub struct State {
+  pub time: Seconds,
   
+  pub message: Option<Message>,
+  pub level_number: LevelNumber,
+  
+  pub player: Player,
   pub spinies: Vec<AnimatedPos>,
 }
 
@@ -75,13 +78,15 @@ pub fn initial_state() -> State {
                    ............................................."),
     level_number: 0,
     
-    up_pressed:    false,
-    left_pressed:  false,
-    down_pressed:  false,
-    right_pressed: false,
-    most_recent_dir: None,
-    buffered_dir:    None,
-    player: AnimatedPos::Idle([0, 1]),
+    player: Player {
+      up_pressed:    false,
+      left_pressed:  false,
+      down_pressed:  false,
+      right_pressed: false,
+      most_recent_dir: None,
+      buffered_dir:    None,
+      pos: AnimatedPos::Idle([0, 1]),
+    },
     
     spinies: Vec::new(),
   }
