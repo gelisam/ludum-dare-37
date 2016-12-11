@@ -48,7 +48,7 @@ pub struct State {
   pub right_pressed: bool,
   pub most_recent_dir: Option<Dir>, // favour the last key if many are pressed
   pub buffered_dir:    Option<Dir>, // a key tap which hasn't been honored yet
-  pub player_pos: AnimatedPos,
+  pub player: AnimatedPos,
 }
 
 pub fn initial_state() -> State {
@@ -79,6 +79,6 @@ pub fn initial_state() -> State {
     right_pressed: false,
     most_recent_dir: None,
     buffered_dir:    None,
-    player_pos: AnimatedPos::Idle([0, 1]),
+    player: AnimatedPos::Idle([0, 1]),
   }
 }

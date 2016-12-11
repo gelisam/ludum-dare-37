@@ -87,7 +87,7 @@ fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform:
 fn draw_player(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use types::AnimatedPos::*;
   
-  let (pos, dir, dt) = match state.player_pos {
+  let (pos, dir, dt) = match state.player {
     Idle(pos)                 => (pos, [0, 0], 0.0),
     MovingSince(pos, dir, t0) => (pos, dir, state.time - t0),
   };

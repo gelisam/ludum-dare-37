@@ -22,7 +22,7 @@ fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Acti
 }
 
 fn initiate_move(state: &mut State, dir: Dir) -> Option<Action> {
-  match state.player_pos {
+  match state.player {
     Idle(pos)       => try_move_action(state.level_number, pos, dir),
     MovingSince(..) => None,
   }
@@ -42,10 +42,10 @@ fn release_direction(is_pressed: &mut bool) {
   *is_pressed = false;
 }
 
-fn update_player_pos(state: &mut State, t: Seconds) -> Option<Action> {
-  if let MovingSince(pos, dir, t0) = state.player_pos {
+fn update_player(state: &mut State, t: Seconds) -> Option<Action> {
+  if let MovingSince(pos, dir, t0) = state.player {
     if t >= t0 + TIME_TO_CROSS_CELL {
-      state.player_pos = Idle(add(pos, dir));
+      state.player = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.
       if state.buffered_dir == Some(UP)    { return initiate_move(state, UP);    }
@@ -101,7 +101,7 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           state.time += dt;
           let t = state.time;
           
-          update_player_pos(state, t)
+          update_player(state, t)
         },
         
         PressUp    => initiate_move(state, UP   ),
@@ -121,7 +121,7 @@ fn execute_action(state: &mut State, action: Action) {
   match action {
     Move(pos, dir) => {
       state.buffered_dir = None;
-      state.player_pos = MovingSince(pos, dir, state.time);
+      state.player = MovingSince(pos, dir, state.time);
     },
     ReadSign(message) => {
       state.message = Some(message);
