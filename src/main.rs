@@ -15,6 +15,7 @@ mod levels;
 mod player;
 mod render;
 mod resources;
+mod spiny;
 mod state;
 mod types;
 
