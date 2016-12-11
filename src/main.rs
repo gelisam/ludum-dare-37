@@ -14,13 +14,14 @@ mod game;
 mod levels;
 mod render;
 mod resources;
+mod state;
 mod types;
 
 use game::*;
 use levels::*;
 use render::*;
 use resources::*;
-use types::*;
+use state::*;
 
 
 fn main() {
@@ -38,10 +39,7 @@ fn main() {
       .exit_on_esc(true)
       .build()
       .unwrap();
-  
   let mut state = initial_state();
-  load_level(&mut state, 0);
-  
   let resources = load_resources();
   let mut gl = GlGraphics::new(opengl);
   

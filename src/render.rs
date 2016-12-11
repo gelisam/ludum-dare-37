@@ -12,6 +12,7 @@ use font::*;
 use game::*;
 use levels::*;
 use resources::*;
+use state::*;
 use types::*;
 
 

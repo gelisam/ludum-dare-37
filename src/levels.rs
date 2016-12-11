@@ -82,19 +82,19 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   }
 }
 
-pub fn load_level(state: &mut State, level_number: LevelNumber) {
+pub fn load_spinies(level_number: LevelNumber, t: Seconds) -> Vec<AnimatedPos> {
   use self::CellDescription::*;
   use types::AnimatedPos::*;
   
-  state.level_number = level_number;
-  
-  state.spinies = Vec::new();
+  let mut vec = Vec::new();
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
       let pos = [i,j];
       if let Spiny(dir) = cell_at(level_number, pos) {
-        state.spinies.push(MovingSince(pos, dir, state.time));
+        vec.push(MovingSince(pos, dir, t));
       }
     }
   }
+  
+  vec
 }

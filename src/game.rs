@@ -1,6 +1,7 @@
 use graphics::math::*;
 
 use levels::*;
+use state::*;
 use types::*;
 use types::RawInputEvent::*;
 use types::AnimatedPos::*;
