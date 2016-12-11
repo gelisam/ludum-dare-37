@@ -129,9 +129,11 @@ pub fn update_player(player: &mut Player, level_number: LevelNumber, t: Seconds)
       if t >= t0 + PLAYER_MOVE_DURATION {
         let t_dst = t + PLAYER_MOVE_DURATION;
         player.pos = moving_in(level_src, level_dst, t_dst);
+        
+        Some(Action::TransitionLevel(level_src, level_dst))
+      } else {
+        None
       }
-      
-      None
     },
     MovingInUntil(level_src, level_dst, t_dst) => {
       if t >= t_dst {

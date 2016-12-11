@@ -1,6 +1,7 @@
 use graphics::math::*;
 
 use corpse::*;
+use levels::*;
 use player::*;
 use spiny::*;
 use state::*;
@@ -99,6 +100,10 @@ fn execute_action(state: &mut State, action: Action) {
     },
     NextLevel => {
       state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
+    },
+    TransitionLevel(level_src, level_dst) => {
+      state.level_number = level_dst;
+      state.spinies = load_spinies(level_dst);
     },
     
     Pause => {

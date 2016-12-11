@@ -25,8 +25,24 @@ pub const RIGHT_DOOR: Pos = [8, 5];
 pub const LEVEL_WIDTH: i8 = 9;
 pub const LEVEL_HEIGHT: i8 = 7;
 
-pub const LEVELS: [LevelDescription; 1] = [
+pub const LEVELS: [LevelDescription; 2] = [
   // LEVEL 1
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##              ##.\
+                .##      S0      ##.\
+                .##              ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
+      "This is a sequel to my Ludum Dare 31\n\
+       game, \"I've Seen This Room Before\"."
+    ],
+  },
+  
+  // LEVEL 2
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
@@ -37,8 +53,7 @@ pub const LEVELS: [LevelDescription; 1] = [
                 .##              RD.\
                 .##################.",
     signs: &[
-      "This is a sequel to my Ludum Dare 31\n\
-       game, \"I've Seen This Room Before\"."
+      "Only slightly harder than the previous level :)"
     ],
   },
 ];

@@ -78,7 +78,7 @@ pub enum Action {
   Move(Pos, Dir),
   ReadSign(Message),
   Die(FPos),
-  PreviousLevel, NextLevel,
+  PreviousLevel, NextLevel, TransitionLevel(LevelNumber, LevelNumber),
   Pause, Unpause,
 }
 
