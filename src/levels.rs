@@ -53,13 +53,14 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   } else {
     let level_description: &LevelDescription = &LEVELS[level_number as usize];
     let (u1, u2) = {
-      let x_index = pos[0] as usize;
-      let y_index = pos[1] as usize;
-      let char_index = ASCII_MAP_OFFSET + y_index*ASCII_MAP_WIDTH + x_index*CELL_WIDTH;
-      ( level_description.ascii_map.as_bytes()[char_index]
-      , level_description.ascii_map.as_bytes()[char_index + 1]
-      )
-    };
+          let x_index = pos[0] as usize;
+          let y_index = pos[1] as usize;
+          let char_index = ASCII_MAP_OFFSET + y_index*ASCII_MAP_WIDTH + x_index*CELL_WIDTH;
+          
+          ( level_description.ascii_map.as_bytes()[char_index]
+          , level_description.ascii_map.as_bytes()[char_index + 1]
+          )
+        };
     
     // The second character is sometimes a number, e.g. "S0" and "S1" to distinguish two signs
     // in the same level, or "K2" for a key which is valid for levels CURRENT to (CURRENT+2).

@@ -20,9 +20,9 @@ pub struct Player {
 // position can be in-between two cells.
 pub fn compute_player_f_pos(player: &AnimatedPos, t: Seconds) -> FPos {
   let (pos, dir, t0) = match player {
-    &Idle(pos)                 => (pos, [0, 0], t),
-    &MovingSince(pos, dir, t0) => (pos, dir, t0),
-  };
+        &Idle(pos)                 => (pos, [0, 0], t),
+        &MovingSince(pos, dir, t0) => (pos, dir, t0),
+      };
   
   compute_f_pos(pos, dir, PLAYER_SPEED, t0, t)
 }
