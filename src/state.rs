@@ -11,6 +11,7 @@ pub struct State {
   
   pub message: Option<Message>,
   pub level_number: LevelNumber,
+  pub previous_level: LevelNumber,
   
   pub player: Player,
   pub corpses: VecDeque<Corpse>,
@@ -21,6 +22,7 @@ pub struct State {
 
 pub fn initial_state() -> State {
   let t = 0.0;
+  let previous_level = 0;
   let level_number = 1;
   
   State {
@@ -43,6 +45,7 @@ pub fn initial_state() -> State {
                    .                                           .\n\
                    ............................................."),
     level_number: level_number,
+    previous_level: previous_level,
     
     player: Player {
       up_pressed:    false,
@@ -51,7 +54,7 @@ pub fn initial_state() -> State {
       right_pressed: false,
       most_recent_dir: None,
       buffered_dir:    None,
-      pos: moving_in(0, level_number, t + PLAYER_MOVE_DURATION),
+      pos: moving_in(previous_level, level_number, t + PLAYER_MOVE_DURATION),
     },
     corpses: VecDeque::new(),
     

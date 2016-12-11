@@ -25,7 +25,7 @@ pub const RIGHT_DOOR: Pos = [8, 5];
 pub const LEVEL_WIDTH: i8 = 9;
 pub const LEVEL_HEIGHT: i8 = 7;
 
-pub const LEVELS: [LevelDescription; 2] = [
+pub const LEVELS: [LevelDescription; 3] = [
   // LEVEL 1
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
@@ -54,6 +54,21 @@ pub const LEVELS: [LevelDescription; 2] = [
                 .##################.",
     signs: &[
       "Only slightly harder than the previous level :)"
+    ],
+  },
+  
+  // LEVEL 3
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##              ##.\
+                .##      S0      ##.\
+                .##              ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
+      "Last level."
     ],
   },
 ];

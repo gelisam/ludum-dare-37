@@ -92,7 +92,7 @@ fn execute_action(state: &mut State, action: Action) {
       };
       state.corpses.push_back(corpse);
       
-      state.player.pos = moving_in(state.level_number - 1, state.level_number, state.time);
+      state.player.pos = moving_in(state.previous_level, state.level_number, state.time);
     },
     
     PreviousLevel => {
@@ -102,6 +102,7 @@ fn execute_action(state: &mut State, action: Action) {
       state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
     },
     TransitionLevel(level_src, level_dst) => {
+      state.previous_level = level_src;
       state.level_number = level_dst;
       state.spinies = load_spinies(level_dst);
     },
