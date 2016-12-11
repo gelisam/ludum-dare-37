@@ -22,12 +22,17 @@ pub enum RawInputEvent {
 }
 
 
+pub enum PlayerPos {
+  Idle(Pos),
+  MovingSince(Pos, Dir, Seconds),
+}
+
 pub struct State {
   pub time: Seconds,
   
   pub message: Option<Message>,
   pub level_number: LevelNumber,
-  pub pos: Pos,
+  pub player_pos: PlayerPos,
 }
 
 pub fn initial_state() -> State {
@@ -51,6 +56,6 @@ pub fn initial_state() -> State {
                    .                                           .\n\
                    ............................................."),
     level_number: 0,
-    pos: [0, 1],
+    player_pos: PlayerPos::Idle([0, 1]),
   }
 }

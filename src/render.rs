@@ -9,6 +9,7 @@ use graphics::math::{ Matrix2d, Vec2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
 use font::*;
+use game::*;
 use levels::*;
 use resources::*;
 use types::*;
@@ -35,6 +36,7 @@ fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &m
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
   }
 }
+
 
 fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use levels::CellDescription::*;
@@ -81,13 +83,33 @@ fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform:
   }
 }
 
+
+fn draw_player(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  use types::PlayerPos::*;
+  
+  let (pos, dir, dt) = match state.player_pos {
+    Idle(pos)                 => (pos, [0, 0], 0.0),
+    MovingSince(pos, dir, t0) => (pos, dir, state.time - t0),
+  };
+  
+  let x = pos[0] as f64 + dt * PLAYER_SPEED * dir[0] as f64;
+  let y = pos[1] as f64 + dt * PLAYER_SPEED * dir[1] as f64;
+  
+  draw_sprite(&resources.player, [x,y], transform, gl);
+}
+
+fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  draw_player(state, resources, transform, gl);
+}
+
+
 pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resources, gl: &mut GlGraphics) {
   gl.draw(args.viewport(), |c, gl| {
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
     let transform = c.transform.scale(PIXEL_SIZE as f64, PIXEL_SIZE as f64);
     draw_lower_level(state.level_number, resources, transform, gl);
-    draw_sprite(&resources.player, [state.pos[0] as f64, state.pos[1] as f64], transform, gl);
+    draw_characters(state, resources, transform, gl);
     draw_upper_level(state.level_number, resources, transform, gl);
     
     for message in state.message {
