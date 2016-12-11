@@ -37,6 +37,7 @@ pub const LEVEL_WIDTH: i8 = 9;
 pub const LEVEL_HEIGHT: i8 = 7;
 
 pub const LEVELS: [LevelDescription; 1] = [
+  // LEVEL 1
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
@@ -65,7 +66,8 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   if (pos[0] < 0) || (pos[1] < 0) || (pos[0] >= LEVEL_WIDTH) || (pos[1] >= LEVEL_HEIGHT) {
     Floor
   } else {
-    let level_description: &LevelDescription = &LEVELS[level_number as usize];
+    let level_index = level_number as usize - 1; // LEVELS is 0-based, but level numbers are 1-based
+    let level_description: &LevelDescription = &LEVELS[level_index];
     let (u1, u2) = {
           let x_index = pos[0] as usize;
           let y_index = pos[1] as usize;
