@@ -36,7 +36,7 @@ fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &m
   }
 }
 
-fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use levels::CellDescription::*;
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
@@ -53,11 +53,30 @@ fn draw_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transfor
   }
 }
 
-fn draw_level(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  use levels::CellDescription::*;
+  
+  let f_pos = [pos[0] as f64, pos[1] as f64];
+  match cell_at(level_number, pos) {
+    LeftDoor   => draw_sprite(&resource.start_top,    f_pos, transform, gl),
+    RigthDoor  => draw_sprite(&resource.goal_top,     f_pos, transform, gl),
+    OpenedDoor => draw_sprite(&resource.unlocked_top, f_pos, transform, gl),
+    _          => {},
+  }
+}
+
+fn draw_lower_level(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
-      
-      draw_cell(level_number, [i,j], resources, transform, gl);
+      draw_lower_cell(level_number, [i,j], resources, transform, gl);
+    }
+  }
+}
+
+fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  for j in 0..LEVEL_HEIGHT {
+    for i in 0..LEVEL_WIDTH {
+      draw_upper_cell(level_number, [i,j], resources, transform, gl);
     }
   }
 }
@@ -67,8 +86,9 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
     let transform = c.transform.scale(PIXEL_SIZE as f64, PIXEL_SIZE as f64);
-    draw_level(state.level_number, resources, transform, gl);
+    draw_lower_level(state.level_number, resources, transform, gl);
     draw_sprite(&resources.player, [state.pos[0] as f64, state.pos[1] as f64], transform, gl);
+    draw_upper_level(state.level_number, resources, transform, gl);
     
     for message in state.message {
       // Fade to white to make the text more readable
