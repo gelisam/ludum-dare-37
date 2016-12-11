@@ -1,19 +1,12 @@
 use graphics::math::*;
 
 use levels::*;
+use player::*;
 use state::*;
 use types::*;
 use types::RawInputEvent::*;
 use types::AnimatedPos::*;
 
-
-// cells per second
-pub const PLAYER_SPEED: f64 = 4.0;
-pub const SPINY_SPEED:  f64 = 8.0;
-
-// time to cross cell
-const PLAYER_MOVE_DURATION: f64 = 1.0 / PLAYER_SPEED;
-const SPINY_MOVE_DURATION:  f64 = 1.0 / SPINY_SPEED;
 
 fn update_spiny(spiny: &mut AnimatedPos, level_number: LevelNumber, t: Seconds) {
   use levels::CellDescription::*;
@@ -29,67 +22,6 @@ fn update_spiny(spiny: &mut AnimatedPos, level_number: LevelNumber, t: Seconds) 
   }
 }
 
-
-fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Action> {
-  use levels::CellDescription::*;
-  use types::Action::*;
-  
-  match cell_at(level_number, add(pos, dir)) {
-    LockedDoor    => None,
-    Sign(message) => Some(ReadSign(message)),
-    Wall          => None,
-    _             => Some(Move(pos, dir)),
-  }
-}
-
-fn initiate_move(player: &mut Player, level_number: LevelNumber, dir: Dir) -> Option<Action> {
-  match player.pos {
-    Idle(pos)       => try_move_action(level_number, pos, dir),
-    MovingSince(..) => None,
-  }
-}
-
-fn press_direction(is_pressed: &mut bool, buffered_dir: &mut Option<Dir>, most_recent_dir: &mut Option<Dir>, dir: Dir) {
-  if !*is_pressed {
-    // honor single-taps, but not the fake auto-repeat keypresses
-    *buffered_dir = Some(dir);
-  }
-  
-  *is_pressed = true;
-  *most_recent_dir = Some(dir);
-}
-
-fn release_direction(is_pressed: &mut bool) {
-  *is_pressed = false;
-}
-
-fn update_player(player: &mut Player, level_number: LevelNumber, t: Seconds) -> Option<Action> {
-  if let MovingSince(pos, dir, t0) = player.pos {
-    if t >= t0 + PLAYER_MOVE_DURATION {
-      player.pos = Idle(add(pos, dir));
-      
-      // If the user holds right and taps down, we want to go down one cell and then continue going right.
-      if player.buffered_dir == Some(UP)    { return initiate_move(player, level_number, UP);    }
-      if player.buffered_dir == Some(LEFT)  { return initiate_move(player, level_number, LEFT);  }
-      if player.buffered_dir == Some(DOWN)  { return initiate_move(player, level_number, DOWN);  }
-      if player.buffered_dir == Some(RIGHT) { return initiate_move(player, level_number, RIGHT); }
-      
-      // If the user is holding several keys, favour the most recent one.
-      if player.up_pressed    && player.most_recent_dir == Some(UP)    { return initiate_move(player, level_number, UP);    }
-      if player.left_pressed  && player.most_recent_dir == Some(LEFT)  { return initiate_move(player, level_number, LEFT);  }
-      if player.down_pressed  && player.most_recent_dir == Some(DOWN)  { return initiate_move(player, level_number, DOWN);  }
-      if player.right_pressed && player.most_recent_dir == Some(RIGHT) { return initiate_move(player, level_number, RIGHT); }
-      
-      // Continue moving in one of the pressed directions even if none is the most recent.
-      if player.up_pressed    { return initiate_move(player, level_number, UP);    }
-      if player.left_pressed  { return initiate_move(player, level_number, LEFT);  }
-      if player.down_pressed  { return initiate_move(player, level_number, DOWN);  }
-      if player.right_pressed { return initiate_move(player, level_number, RIGHT); }
-    }
-  }
-  
-  None
-}
 
 fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> Option<Action> {
   use types::Action::*;

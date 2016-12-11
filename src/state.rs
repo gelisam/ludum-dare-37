@@ -1,4 +1,5 @@
 use levels::*;
+use player::*;
 use types::*;
 
 

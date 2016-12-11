@@ -9,8 +9,8 @@ use graphics::math::{ Matrix2d, Vec2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
 use font::*;
-use game::*;
 use levels::*;
+use player::*;
 use resources::*;
 use state::*;
 use types::*;
