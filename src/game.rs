@@ -23,9 +23,24 @@ fn is_cell_walkable(level_number: LevelNumber, pos: Pos) -> bool {
 fn initiate_move(state: &mut State, dir: Dir) {
   if let Idle(pos) = state.player_pos {
     if is_cell_walkable(state.level_number, add(pos, dir)) {
+      state.buffered_dir = None;
       state.player_pos = MovingSince(pos, dir, state.time);
     }
   }
+}
+
+fn press_direction(is_pressed: &mut bool, buffered_dir: &mut Option<Dir>, most_recent_dir: &mut Option<Dir>, dir: Dir) {
+  if !*is_pressed {
+    // honor single-taps, but not the fake auto-repeat keypresses
+    *buffered_dir = Some(dir);
+  }
+  
+  *is_pressed = true;
+  *most_recent_dir = Some(dir);
+}
+
+fn release_direction(is_pressed: &mut bool) {
+  *is_pressed = false;
 }
 
 fn update_player_pos(state: &mut State, t: Seconds) {
@@ -34,10 +49,10 @@ fn update_player_pos(state: &mut State, t: Seconds) {
       state.player_pos = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.
-      if state.buffered_dir == Some(UP)    { state.buffered_dir = None; initiate_move(state, UP);    }
-      if state.buffered_dir == Some(LEFT)  { state.buffered_dir = None; initiate_move(state, LEFT);  }
-      if state.buffered_dir == Some(DOWN)  { state.buffered_dir = None; initiate_move(state, DOWN);  }
-      if state.buffered_dir == Some(RIGHT) { state.buffered_dir = None; initiate_move(state, RIGHT); }
+      if state.buffered_dir == Some(UP)    { initiate_move(state, UP);    }
+      if state.buffered_dir == Some(LEFT)  { initiate_move(state, LEFT);  }
+      if state.buffered_dir == Some(DOWN)  { initiate_move(state, DOWN);  }
+      if state.buffered_dir == Some(RIGHT) { initiate_move(state, RIGHT); }
       
       // If the user is holding several keys, favour the most recent one.
       if state.up_pressed    && state.most_recent_dir == Some(UP)    { initiate_move(state, UP);    }
@@ -59,15 +74,15 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
   // Update the key statuses whether the game is paused or not, otherwise the character will keep moving
   // if the user pauses and then releases a key.
   match raw_input_event {
-    PressUp    => { state.up_pressed    = true; state.most_recent_dir = Some(UP);    }
-    PressLeft  => { state.left_pressed  = true; state.most_recent_dir = Some(LEFT);  }
-    PressDown  => { state.down_pressed  = true; state.most_recent_dir = Some(DOWN);  }
-    PressRight => { state.right_pressed = true; state.most_recent_dir = Some(RIGHT); }
+    PressUp      => press_direction(&mut state.up_pressed,    &mut state.buffered_dir, &mut state.most_recent_dir, UP),
+    PressLeft    => press_direction(&mut state.left_pressed,  &mut state.buffered_dir, &mut state.most_recent_dir, LEFT),
+    PressDown    => press_direction(&mut state.down_pressed,  &mut state.buffered_dir, &mut state.most_recent_dir, DOWN),
+    PressRight   => press_direction(&mut state.right_pressed, &mut state.buffered_dir, &mut state.most_recent_dir, RIGHT),
     
-    ReleaseUp    => state.up_pressed    = false,
-    ReleaseLeft  => state.left_pressed  = false,
-    ReleaseDown  => state.down_pressed  = false,
-    ReleaseRight => state.right_pressed = false,
+    ReleaseUp    => release_direction(&mut state.up_pressed),
+    ReleaseLeft  => release_direction(&mut state.left_pressed),
+    ReleaseDown  => release_direction(&mut state.down_pressed),
+    ReleaseRight => release_direction(&mut state.right_pressed),
     
     _ => {},
   }
