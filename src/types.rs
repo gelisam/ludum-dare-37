@@ -16,7 +16,10 @@ pub type Radians = f64;
 
 pub enum RawInputEvent {
   TimePasses(Seconds),
-  Move(Dir),
+  PressUp,    ReleaseUp,
+  PressLeft,  ReleaseLeft,
+  PressDown,  ReleaseDown,
+  PressRight, ReleaseRight,
   Pause,
   AnyKey,
 }
@@ -32,6 +35,12 @@ pub struct State {
   
   pub message: Option<Message>,
   pub level_number: LevelNumber,
+  
+  pub up_pressed:    bool,
+  pub left_pressed:  bool,
+  pub down_pressed:  bool,
+  pub right_pressed: bool,
+  pub most_recent_dir: Option<Dir>,
   pub player_pos: PlayerPos,
 }
 
@@ -56,6 +65,12 @@ pub fn initial_state() -> State {
                    .                                           .\n\
                    ............................................."),
     level_number: 0,
+    
+    up_pressed:    false,
+    left_pressed:  false,
+    down_pressed:  false,
+    right_pressed: false,
+    most_recent_dir: None,
     player_pos: PlayerPos::Idle([0, 1]),
   }
 }
