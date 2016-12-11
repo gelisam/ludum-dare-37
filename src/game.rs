@@ -1,5 +1,6 @@
 use graphics::math::*;
 
+use corpse::*;
 use player::*;
 use spiny::*;
 use state::*;
@@ -55,6 +56,7 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           let t = state.time;
           
           update_spinies(&mut state.spinies, state.level_number, &mut state.spinies_moving_since, t);
+          update_corpses(&mut state.corpses, t);
           let player_action = update_player(&mut state.player, state.level_number, t);
           
           should_die(&state.player.pos, &state.spinies, state.spinies_moving_since, t).or(player_action)
@@ -82,7 +84,13 @@ fn execute_action(state: &mut State, action: Action) {
     ReadSign(message) => {
       state.message = Some(message);
     },
-    Die(_) => {
+    Die(f_pos) => {
+      let corpse = Corpse {
+        f_pos: f_pos,
+        t0: state.time,
+      };
+      state.corpses.push_back(corpse);
+      
       state.player.pos = MovingSince([-1,1], [1,0], state.time);
     },
     

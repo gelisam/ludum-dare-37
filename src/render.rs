@@ -8,6 +8,7 @@ use graphics::*;
 use graphics::math::{ Matrix2d, Vec2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
+use corpse::*;
 use font::*;
 use levels::*;
 use player::*;
@@ -18,7 +19,7 @@ use types::*;
 
 pub const PIXEL_SIZE: u8 = 5;
 
-fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_transparent_sprite(texture: &Texture, f_pos: Vec2d<f64>, alpha: f64, transform: Matrix2d, gl: &mut GlGraphics) {
   unsafe {
     // Sharp pixels please!
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -27,15 +28,20 @@ fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &m
     gl::Disable(gl::FRAMEBUFFER_SRGB);
   }
   
+  let color = [1.0, 1.0, 1.0, alpha as f32];
   let dx = f_pos[0] * SPRITE_WIDTH as f64;
   let dy = f_pos[1] * SPRITE_HEIGHT as f64;
-  image(texture, transform.trans(dx, dy), gl);
+  Image::new_color(color).draw(texture, &Default::default(), transform.trans(dx, dy), gl);
   
   unsafe {
     // Sometimes the pixels still aren't sharp. There is no logical reason why setting this again after the
     // image has already been drawn should help, but it does!
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
   }
+}
+
+fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &mut GlGraphics) {
+  draw_transparent_sprite(texture, f_pos, 1.0, transform, gl);
 }
 
 
@@ -87,6 +93,13 @@ fn draw_player(player: &Player, t: Seconds, resources: &Resources, transform: Ma
   draw_sprite(&resources.player, compute_player_f_pos(&player.pos, t), transform, gl);
 }
 
+fn draw_corpse(corpse: &Corpse, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  let dt = t - corpse.t0;
+  let alpha = 1.0 - CORPSE_SPEED * dt;
+  
+  draw_transparent_sprite(&resources.player, corpse.f_pos, alpha, transform, gl);
+}
+
 fn draw_spiny(spiny: &MovingPos, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   let dt = t - t0;
   let x = spiny.pos[0] as f64 + dt * SPINY_SPEED * spiny.dir[0] as f64;
@@ -96,6 +109,10 @@ fn draw_spiny(spiny: &MovingPos, t0: Seconds, t: Seconds, resources: &Resources,
 }
 
 fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  for corpse in &state.corpses {
+    draw_corpse(corpse, state.time, resources, transform, gl);
+  }
+  
   draw_player(&state.player, state.time, resources, transform, gl);
   
   for spiny in &state.spinies {

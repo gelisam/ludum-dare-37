@@ -9,20 +9,24 @@ pub const DOWN:  Dir = [ 0, 1];
 pub const RIGHT: Dir = [ 1, 0];
 
 
+pub type Seconds = f64;
+
 // cells per second
 pub const PLAYER_SPEED: f64 = 4.0;
 pub const SPINY_SPEED:  f64 = 8.0;
 
 // time to cross cell
-pub const PLAYER_MOVE_DURATION:     f64 = 1.0 / PLAYER_SPEED;
-pub const SPINY_MOVE_DURATION:      f64 = 1.0 / SPINY_SPEED;
-pub const SPINY_HALF_MOVE_DURATION: f64 = SPINY_MOVE_DURATION / 2.0;
+pub const PLAYER_MOVE_DURATION:     Seconds = 1.0 / PLAYER_SPEED;
+pub const SPINY_MOVE_DURATION:      Seconds = 1.0 / SPINY_SPEED;
+pub const SPINY_HALF_MOVE_DURATION: Seconds = SPINY_MOVE_DURATION / 2.0;
+
+pub const CORPSE_FADE_OUT_DURATION: Seconds = 1.0;
+pub const CORPSE_SPEED: f64 = 1.0 / CORPSE_FADE_OUT_DURATION; // fraction of alpha to remove per second
 
 
 pub type Pos = Vec2d<i8>;
 pub type FPos = Vec2d<f64>;
 pub type FRect = Rectangle<f64>;
-pub type Seconds = f64;
 
 pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) -> FPos {
   let dt = t - t0;

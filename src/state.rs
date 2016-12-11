@@ -1,3 +1,6 @@
+use std::collections::VecDeque;
+
+use corpse::*;
 use levels::*;
 use player::*;
 use types::*;
@@ -10,6 +13,7 @@ pub struct State {
   pub level_number: LevelNumber,
   
   pub player: Player,
+  pub corpses: VecDeque<Corpse>,
   
   pub spinies_moving_since: Seconds,
   pub spinies: Vec<MovingPos>,
@@ -49,6 +53,7 @@ pub fn initial_state() -> State {
       buffered_dir:    None,
       pos: AnimatedPos::Idle([0, 1]),
     },
+    corpses: VecDeque::new(),
     
     spinies_moving_since: t,
     spinies: load_spinies(level_number),

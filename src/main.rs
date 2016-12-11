@@ -9,6 +9,7 @@ use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::*;
 use piston::window::WindowSettings;
 
+mod corpse;
 mod font;
 mod game;
 mod levels;
