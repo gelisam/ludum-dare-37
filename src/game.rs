@@ -14,10 +14,10 @@ fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Acti
   use types::Action::*;
   
   match cell_at(level_number, add(pos, dir)) {
-    LockedDoor => None,
-    Sign(_)    => None,
-    Wall       => None,
-    _          => Some(Move(pos, dir)),
+    LockedDoor    => None,
+    Sign(message) => Some(ReadSign(message)),
+    Wall          => None,
+    _             => Some(Move(pos, dir)),
   }
 }
 
@@ -122,6 +122,9 @@ fn execute_action(state: &mut State, action: Action) {
     Move(pos, dir) => {
       state.buffered_dir = None;
       state.player_pos = MovingSince(pos, dir, state.time);
+    },
+    ReadSign(message) => {
+      state.message = Some(message);
     },
     Pause => {
       state.message = Some(".............................................\n\

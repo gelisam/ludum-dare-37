@@ -26,6 +26,7 @@ pub enum RawInputEvent {
 
 pub enum Action {
   Move(Pos, Dir),
+  ReadSign(Message),
   Pause, Unpause,
 }
 
