@@ -55,7 +55,6 @@ fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, tr
     LockedDoor => draw_sprite(&resource.locked,   f_pos, transform, gl),
     OpenedDoor => draw_sprite(&resource.unlocked, f_pos, transform, gl),
     Sign(_)    => draw_sprite(&resource.sign,     f_pos, transform, gl),
-    Wall       => draw_sprite(&resource.wall,     f_pos, transform, gl),
     _          => draw_sprite(&resource.floor,    f_pos, transform, gl),
   }
 }
@@ -68,6 +67,7 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, tr
     LeftDoor   => draw_sprite(&resource.start_top,    f_pos, transform, gl),
     RightDoor  => draw_sprite(&resource.goal_top,     f_pos, transform, gl),
     OpenedDoor => draw_sprite(&resource.unlocked_top, f_pos, transform, gl),
+    Wall       => draw_sprite(&resource.wall,         f_pos, transform, gl),
     _          => {},
   }
 }

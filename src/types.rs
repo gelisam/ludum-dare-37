@@ -26,15 +26,27 @@ pub const CORPSE_SPEED: f64 = 1.0 / CORPSE_FADE_OUT_DURATION; // fraction of alp
 
 pub type Pos = Vec2d<i8>;
 pub type FPos = Vec2d<f64>;
+pub type FSpeed = Vec2d<f64>;
 pub type FRect = Rectangle<f64>;
 
-pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) -> FPos {
+pub fn linear_motion(pos: Pos, speed: FSpeed, t0: Seconds, t: Seconds) -> FPos {
   let dt = t - t0;
   
-  let x = pos[0] as f64 + dt * speed * dir[0] as f64;
-  let y = pos[1] as f64 + dt * speed * dir[1] as f64;
+  let x = pos[0] as f64 + dt * speed[0];
+  let y = pos[1] as f64 + dt * speed[1];
   
   [x,y]
+}
+
+pub fn compute_f_speed(dir: Dir, speed: f64) -> FSpeed {
+  let dx = speed * dir[0] as f64;
+  let dy = speed * dir[1] as f64;
+  
+  [dx,dy]
+}
+
+pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) -> FPos {
+  linear_motion(pos, compute_f_speed(dir, speed), t0, t)
 }
 
 pub fn compute_f_rect(f_pos: FPos) -> FRect {
@@ -66,6 +78,7 @@ pub enum Action {
   Move(Pos, Dir),
   ReadSign(Message),
   Die(FPos),
+  PreviousLevel, NextLevel,
   Pause, Unpause,
 }
 
@@ -73,6 +86,8 @@ pub enum Action {
 pub enum AnimatedPos {
   Idle(Pos),
   MovingSince(Pos, Dir, Seconds),
+  MovingOutSince(LevelNumber, LevelNumber, Seconds),
+  MovingInUntil(LevelNumber, LevelNumber, Seconds),
 }
 
 pub struct MovingPos {

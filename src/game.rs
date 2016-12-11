@@ -95,6 +95,13 @@ fn execute_action(state: &mut State, action: Action) {
       state.player.pos = moving_into_left_door(state.time);
     },
     
+    PreviousLevel => {
+      state.player.pos = MovingOutSince(state.level_number, state.level_number - 1, state.time);
+    },
+    NextLevel => {
+      state.player.pos = MovingOutSince(state.level_number, state.level_number + 1, state.time);
+    },
+    
     Pause => {
       state.message = Some(".............................................\n\
                             .                                           .\n\
