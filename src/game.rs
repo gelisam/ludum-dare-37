@@ -70,20 +70,9 @@ fn update_player_pos(state: &mut State, t: Seconds) -> Option<Action> {
   None
 }
 
-
-fn execute_action(state: &mut State, action: Action) {
+fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> Option<Action> {
   use types::Action::*;
   
-  match action {
-    Move(pos, dir) => {
-      state.buffered_dir = None;
-      state.player_pos = MovingSince(pos, dir, state.time);
-    },
-  }
-}
-
-
-pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
   // Update the key statuses whether the game is paused or not, otherwise the character will keep moving
   // if the user pauses and then releases a key.
   match raw_input_event {
@@ -103,10 +92,8 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
   match state.message {
     Some(_) =>
       match raw_input_event {
-        Pause | AnyKey | ReleaseUp | ReleaseLeft | ReleaseDown | ReleaseRight => {
-          state.message = None;
-        },
-        _ => {},
+        PressPause | PressAnyKey | ReleaseUp | ReleaseLeft | ReleaseDown | ReleaseRight => Some(Unpause),
+        _                                                                               => None,
       },
     None =>
       match raw_input_event {
@@ -114,34 +101,55 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
           state.time += dt;
           let t = state.time;
           
-          update_player_pos(state, t).map(|action| execute_action(state, action));
+          update_player_pos(state, t)
         },
         
-        PressUp    => { initiate_move(state, UP   ).map(|action| execute_action(state, action)); },
-        PressLeft  => { initiate_move(state, LEFT ).map(|action| execute_action(state, action)); },
-        PressDown  => { initiate_move(state, DOWN ).map(|action| execute_action(state, action)); },
-        PressRight => { initiate_move(state, RIGHT).map(|action| execute_action(state, action)); },
+        PressUp    => initiate_move(state, UP   ),
+        PressLeft  => initiate_move(state, LEFT ),
+        PressDown  => initiate_move(state, DOWN ),
+        PressRight => initiate_move(state, RIGHT),
         
-        Pause => {
-          state.message = Some(".............................................\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                ** PAUSED **               .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .                                           .\n\
-                                .         press any key to continue         .\n\
-                                .                                           .\n\
-                                .............................................");
-        }
-        _ => {},
+        PressPause => Some(Pause),
+        _          => None,
       },
+  }
+}
+
+fn execute_action(state: &mut State, action: Action) {
+  use types::Action::*;
+  
+  match action {
+    Move(pos, dir) => {
+      state.buffered_dir = None;
+      state.player_pos = MovingSince(pos, dir, state.time);
+    },
+    Pause => {
+      state.message = Some(".............................................\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                ** PAUSED **               .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .                                           .\n\
+                            .         press any key to continue         .\n\
+                            .                                           .\n\
+                            .............................................");
+    },
+    Unpause => {
+      state.message = None;
+    },
+  }
+}
+
+pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
+  if let Some(action) = handle_raw_input_event(state, raw_input_event) {
+    execute_action(state, action);
   }
 }

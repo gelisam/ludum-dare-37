@@ -85,11 +85,11 @@ fn main() {
       Input(Release(Keyboard(L)))     => update(&mut state, ReleaseRight),
       
       // pause
-      Input(Release(Keyboard(P)))     => update(&mut state, Pause),
-      Input(Release(Keyboard(Space))) => update(&mut state, Pause),
+      Input(Release(Keyboard(P)))     => update(&mut state, PressPause),
+      Input(Release(Keyboard(Space))) => update(&mut state, PressPause),
       
       // unpause
-      Input(Release(Keyboard(_)))     => update(&mut state, AnyKey),
+      Input(Release(Keyboard(_)))     => update(&mut state, PressAnyKey),
       
       _                               => ()
     }

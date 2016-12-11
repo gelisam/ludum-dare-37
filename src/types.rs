@@ -20,12 +20,13 @@ pub enum RawInputEvent {
   PressLeft,  ReleaseLeft,
   PressDown,  ReleaseDown,
   PressRight, ReleaseRight,
-  Pause,
-  AnyKey,
+  PressPause,
+  PressAnyKey,
 }
 
 pub enum Action {
   Move(Pos, Dir),
+  Pause, Unpause,
 }
 
 
