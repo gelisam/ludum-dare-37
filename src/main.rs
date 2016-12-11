@@ -47,11 +47,12 @@ fn main() {
     use piston::input::Button::{ Keyboard };
     use piston::input::Event::{ Render, Input, Update };
     use piston::input::Input::{ Press };
-    use piston::input::keyboard::Key::{ Up, Left, Down, Right,  W, A, S, D,  H, J, K, L };
-    use types::RawInputEvent::{ Move, TimePasses };
+    use piston::input::keyboard::Key::{ Up, Left, Down, Right,  W, A, S, D,  H, J, K, L,  P, Space };
+    use types::RawInputEvent::{ TimePasses, Move, Pause, AnyKey };
     
     match e {
       Render(args)                  => render(&mut state, &args, &resources, &mut gl),
+      Update(args)                  => update(&mut state, TimePasses(args.dt)),
       
       // arrow keys
       Input(Press(Keyboard(Up)))    => update(&mut state, Move(UP)),
@@ -71,7 +72,13 @@ fn main() {
       Input(Press(Keyboard(J)))     => update(&mut state, Move(DOWN)),
       Input(Press(Keyboard(L)))     => update(&mut state, Move(RIGHT)),
       
-      Update(args)                  => update(&mut state, TimePasses(args.dt)),
+      // pause
+      Input(Press(Keyboard(P)))     => update(&mut state, Pause),
+      Input(Press(Keyboard(Space))) => update(&mut state, Pause),
+      
+      // other keys (for dismissing messages)
+      Input(Press(Keyboard(_)))     => update(&mut state, AnyKey),
+      
       _                             => ()
     }
   }

@@ -15,8 +15,10 @@ pub type Seconds = f64;
 pub type Radians = f64;
 
 pub enum RawInputEvent {
-  Move(Dir),
   TimePasses(Seconds),
+  Move(Dir),
+  Pause,
+  AnyKey,
 }
 
 
@@ -44,7 +46,7 @@ pub fn initial_state() -> State {
                    .              theme: One Room              .\n\
                    .                                           .\n\
                    .                                           .\n\
-                   .        press any arrow key to begin       .\n\
+                   .           press any key to begin          .\n\
                    .                                           .\n\
                    ............................................."),
     level_number: 0,
