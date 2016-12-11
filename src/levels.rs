@@ -28,9 +28,9 @@ pub const LEVELS: [LevelDescription; 1] = [
                 .##################.\
                 .LD              ##.\
                 .##              ##.\
-                .##      S0      ##.\
+                .##      S0    <<##.\
                 .##              ##.\
-                .##            <<RD.\
+                .##              RD.\
                 .##################.",
     signs: &[
       "This is a sequel to my Ludum Dare 31\n\

@@ -14,6 +14,21 @@ pub const SPINY_SPEED:  f64 = 8.0;
 const PLAYER_MOVE_DURATION: f64 = 1.0 / PLAYER_SPEED;
 const SPINY_MOVE_DURATION:  f64 = 1.0 / SPINY_SPEED;
 
+fn update_spiny(spiny: &mut AnimatedPos, level_number: LevelNumber, t: Seconds) {
+  use levels::CellDescription::*;
+  
+  if let MovingSince(pos, dir, t0) = *spiny {
+    if t >= t0 + SPINY_MOVE_DURATION {
+      let pos = add(pos, dir);
+      *spiny = match cell_at(level_number, add(pos, dir)) {
+        LockedDoor | Sign(_) | Wall => MovingSince(pos, mul_scalar(dir, -1), t), // bounce
+        _                           => MovingSince(pos, dir,                 t), // keep moving
+      }
+    }
+  }
+}
+
+
 fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Action> {
   use levels::CellDescription::*;
   use types::Action::*;
@@ -106,6 +121,9 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           state.time += dt;
           let t = state.time;
           
+          for spiny in &mut state.spinies {
+            update_spiny(spiny, state.level_number, t);
+          }
           update_player(state, t)
         },
         
