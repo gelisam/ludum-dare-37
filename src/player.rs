@@ -18,16 +18,13 @@ pub struct Player {
 
 // floating point version of player.pos which takes movement into account, so the
 // position can be in-between two cells.
-pub fn f_player_pos(player: &Player, t: Seconds) -> Vec2d<f64> {
-  let (pos, dir, dt) = match player.pos {
-    Idle(pos)                 => (pos, [0, 0], 0.0),
-    MovingSince(pos, dir, t0) => (pos, dir, t - t0),
+pub fn compute_player_f_pos(player: &Player, t: Seconds) -> FPos {
+  let (pos, dir, t0) = match player.pos {
+    Idle(pos)                 => (pos, [0, 0], t),
+    MovingSince(pos, dir, t0) => (pos, dir, t0),
   };
   
-  let x = pos[0] as f64 + dt * PLAYER_SPEED * dir[0] as f64;
-  let y = pos[1] as f64 + dt * PLAYER_SPEED * dir[1] as f64;
-  
-  [x,y]
+  compute_f_pos(pos, dir, PLAYER_SPEED, t0, t)
 }
   
 

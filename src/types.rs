@@ -18,11 +18,23 @@ pub const SPINY_MOVE_DURATION:      f64 = 1.0 / SPINY_SPEED;
 pub const SPINY_HALF_MOVE_DURATION: f64 = SPINY_MOVE_DURATION / 2.0;
 
 
+pub type Pos = Vec2d<i8>;
+pub type FPos = Vec2d<f64>;
+pub type Seconds = f64;
+
+pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) -> FPos {
+  let dt = t - t0;
+  
+  let x = pos[0] as f64 + dt * speed * dir[0] as f64;
+  let y = pos[1] as f64 + dt * speed * dir[1] as f64;
+  
+  [x,y]
+}
+
+
 pub type Message = &'static str;
 pub type LevelNumber = u8;
 pub type Lifetime = u8;
-pub type Pos = Vec2d<i8>;
-pub type Seconds = f64;
 pub type Radians = f64;
 
 
