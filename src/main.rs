@@ -38,7 +38,10 @@ fn main() {
       .exit_on_esc(true)
       .build()
       .unwrap();
+  
   let mut state = initial_state();
+  load_level(&mut state, 0);
+  
   let resources = load_resources();
   let mut gl = GlGraphics::new(opengl);
   

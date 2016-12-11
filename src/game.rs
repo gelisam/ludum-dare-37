@@ -6,8 +6,13 @@ use types::RawInputEvent::*;
 use types::AnimatedPos::*;
 
 
-pub const PLAYER_SPEED: f64 = 4.0; // cells per second
-const TIME_TO_CROSS_CELL: f64 = 1.0 / PLAYER_SPEED;
+// cells per second
+pub const PLAYER_SPEED: f64 = 4.0;
+pub const SPINY_SPEED:  f64 = 8.0;
+
+// time to cross cell
+const PLAYER_MOVE_DURATION: f64 = 1.0 / PLAYER_SPEED;
+const SPINY_MOVE_DURATION:  f64 = 1.0 / SPINY_SPEED;
 
 fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Action> {
   use levels::CellDescription::*;
@@ -44,7 +49,7 @@ fn release_direction(is_pressed: &mut bool) {
 
 fn update_player(state: &mut State, t: Seconds) -> Option<Action> {
   if let MovingSince(pos, dir, t0) = state.player {
-    if t >= t0 + TIME_TO_CROSS_CELL {
+    if t >= t0 + PLAYER_MOVE_DURATION {
       state.player = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.

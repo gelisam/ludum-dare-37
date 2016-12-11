@@ -43,15 +43,13 @@ fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, tr
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    Floor      => draw_sprite(&resource.floor,    f_pos, transform, gl),
     LeftDoor   => draw_sprite(&resource.start,    f_pos, transform, gl),
     RigthDoor  => draw_sprite(&resource.goal,     f_pos, transform, gl),
-    Key(_)     => draw_sprite(&resource.key,      f_pos, transform, gl),
     LockedDoor => draw_sprite(&resource.locked,   f_pos, transform, gl),
     OpenedDoor => draw_sprite(&resource.unlocked, f_pos, transform, gl),
     Sign(_)    => draw_sprite(&resource.sign,     f_pos, transform, gl),
-    Spiny(_)   => draw_sprite(&resource.spiny,    f_pos, transform, gl),
     Wall       => draw_sprite(&resource.wall,     f_pos, transform, gl),
+    _          => draw_sprite(&resource.floor,    f_pos, transform, gl),
   }
 }
 
@@ -84,12 +82,12 @@ fn draw_upper_level(level_number: LevelNumber, resources: &Resources, transform:
 }
 
 
-fn draw_player(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_player(player: &AnimatedPos, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use types::AnimatedPos::*;
   
-  let (pos, dir, dt) = match state.player {
-    Idle(pos)                 => (pos, [0, 0], 0.0),
-    MovingSince(pos, dir, t0) => (pos, dir, state.time - t0),
+  let (pos, dir, dt) = match player {
+    &Idle(pos)                 => (pos, [0, 0], 0.0),
+    &MovingSince(pos, dir, t0) => (pos, dir, t - t0),
   };
   
   let x = pos[0] as f64 + dt * PLAYER_SPEED * dir[0] as f64;
@@ -98,8 +96,26 @@ fn draw_player(state: &State, resources: &Resources, transform: Matrix2d, gl: &m
   draw_sprite(&resources.player, [x,y], transform, gl);
 }
 
+fn draw_spiny(spiny: &AnimatedPos, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  use types::AnimatedPos::*;
+  
+  let (pos, dir, dt) = match spiny {
+    &Idle(pos)                 => (pos, [0, 0], 0.0),
+    &MovingSince(pos, dir, t0) => (pos, dir, t - t0),
+  };
+  
+  let x = pos[0] as f64 + dt * SPINY_SPEED * dir[0] as f64;
+  let y = pos[1] as f64 + dt * SPINY_SPEED * dir[1] as f64;
+  
+  draw_sprite(&resources.spiny, [x,y], transform, gl);
+}
+
 fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  draw_player(state, resources, transform, gl);
+  draw_player(&state.player, state.time, resources, transform, gl);
+  
+  for spiny in &state.spinies {
+    draw_spiny(spiny, state.time, resources, transform, gl);
+  }
 }
 
 

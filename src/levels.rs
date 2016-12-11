@@ -30,7 +30,7 @@ pub const LEVELS: [LevelDescription; 1] = [
                 .##              ##.\
                 .##      S0      ##.\
                 .##              ##.\
-                .##              RD.\
+                .##            <<RD.\
                 .##################.",
     signs: &[
       "This is a sequel to my Ludum Dare 31\n\
@@ -78,6 +78,23 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
       ('>','>') => Spiny(RIGHT),
       ('#','#') => Wall,
       _         => panic!("syntax error in level description"),
+    }
+  }
+}
+
+pub fn load_level(state: &mut State, level_number: LevelNumber) {
+  use self::CellDescription::*;
+  use types::AnimatedPos::*;
+  
+  state.level_number = level_number;
+  
+  state.spinies = Vec::new();
+  for j in 0..LEVEL_HEIGHT {
+    for i in 0..LEVEL_WIDTH {
+      let pos = [i,j];
+      if let Spiny(dir) = cell_at(level_number, pos) {
+        state.spinies.push(MovingSince(pos, dir, state.time));
+      }
     }
   }
 }
