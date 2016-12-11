@@ -1,5 +1,6 @@
 use graphics::math::*;
 
+use levels::*;
 use types::*;
 use types::RawInputEvent::*;
 use types::PlayerPos::*;
@@ -8,9 +9,22 @@ use types::PlayerPos::*;
 pub const PLAYER_SPEED: f64 = 4.0; // cells per second
 const TIME_TO_CROSS_CELL: f64 = 1.0 / PLAYER_SPEED;
 
+fn is_cell_walkable(level_number: LevelNumber, pos: Pos) -> bool {
+  use levels::CellDescription::*;
+  
+  match cell_at(level_number, pos) {
+    LockedDoor => false,
+    Sign(_)    => false,
+    Wall       => false,
+    _          => true,
+  }
+}
+
 fn initiate_move(state: &mut State, dir: Dir) {
   if let Idle(pos) = state.player_pos {
-    state.player_pos = MovingSince(pos, dir, state.time);
+    if is_cell_walkable(state.level_number, add(pos, dir)) {
+      state.player_pos = MovingSince(pos, dir, state.time);
+    }
   }
 }
 
