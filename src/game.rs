@@ -37,9 +37,7 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
           state.time += dt;
           let t = state.time;
           
-          for spiny in &mut state.spinies {
-            update_spiny(spiny, state.level_number, t);
-          }
+          update_spinies(&mut state.spinies, state.level_number, &mut state.spinies_moving_since, t);
           update_player(&mut state.player, state.level_number, t)
         },
         

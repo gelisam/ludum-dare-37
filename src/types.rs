@@ -46,3 +46,8 @@ pub enum AnimatedPos {
   Idle(Pos),
   MovingSince(Pos, Dir, Seconds),
 }
+
+pub struct MovingPos {
+  pub pos: Pos,
+  pub dir: Dir,
+}

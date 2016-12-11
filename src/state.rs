@@ -10,7 +10,9 @@ pub struct State {
   pub level_number: LevelNumber,
   
   pub player: Player,
-  pub spinies: Vec<AnimatedPos>,
+  
+  pub spinies_moving_since: Seconds,
+  pub spinies: Vec<MovingPos>,
 }
 
 pub fn initial_state() -> State {
@@ -48,11 +50,14 @@ pub fn initial_state() -> State {
       pos: AnimatedPos::Idle([0, 1]),
     },
     
-    spinies: load_spinies(level_number, t),
+    spinies_moving_since: t,
+    spinies: load_spinies(level_number),
   }
 }
 
 pub fn load_level(state: &mut State, level_number: LevelNumber, t: Seconds) {
   state.level_number = level_number;
-  state.spinies = load_spinies(level_number, t);
+  
+  state.spinies_moving_since = t;
+  state.spinies = load_spinies(level_number);
 }

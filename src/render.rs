@@ -97,16 +97,10 @@ fn draw_player(player: &Player, t: Seconds, resources: &Resources, transform: Ma
   draw_sprite(&resources.player, [x,y], transform, gl);
 }
 
-fn draw_spiny(spiny: &AnimatedPos, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  use types::AnimatedPos::*;
-  
-  let (pos, dir, dt) = match spiny {
-    &Idle(pos)                 => (pos, [0, 0], 0.0),
-    &MovingSince(pos, dir, t0) => (pos, dir, t - t0),
-  };
-  
-  let x = pos[0] as f64 + dt * SPINY_SPEED * dir[0] as f64;
-  let y = pos[1] as f64 + dt * SPINY_SPEED * dir[1] as f64;
+fn draw_spiny(spiny: &MovingPos, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  let dt = t - t0;
+  let x = spiny.pos[0] as f64 + dt * SPINY_SPEED * spiny.dir[0] as f64;
+  let y = spiny.pos[1] as f64 + dt * SPINY_SPEED * spiny.dir[1] as f64;
   
   draw_sprite(&resources.spiny, [x,y], transform, gl);
 }
@@ -115,7 +109,7 @@ fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl
   draw_player(&state.player, state.time, resources, transform, gl);
   
   for spiny in &state.spinies {
-    draw_spiny(spiny, state.time, resources, transform, gl);
+    draw_spiny(spiny, state.spinies_moving_since, state.time, resources, transform, gl);
   }
 }
 
