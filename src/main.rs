@@ -47,15 +47,30 @@ fn main() {
     use piston::input::Button::{ Keyboard };
     use piston::input::Event::{ Render, Input, Update };
     use piston::input::Input::{ Press };
-    use piston::input::keyboard::Key::{ Up, Left, Down, Right };
+    use piston::input::keyboard::Key::{ Up, Left, Down, Right,  W, A, S, D,  H, J, K, L };
     use types::RawInputEvent::{ Move, TimePasses };
     
     match e {
       Render(args)                  => render(&mut state, &args, &resources, &mut gl),
+      
+      // arrow keys
       Input(Press(Keyboard(Up)))    => update(&mut state, Move(UP)),
       Input(Press(Keyboard(Left)))  => update(&mut state, Move(LEFT)),
       Input(Press(Keyboard(Down)))  => update(&mut state, Move(DOWN)),
       Input(Press(Keyboard(Right))) => update(&mut state, Move(RIGHT)),
+      
+      // WASD controls
+      Input(Press(Keyboard(W)))     => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(A)))     => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(S)))     => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(D)))     => update(&mut state, Move(RIGHT)),
+      
+      // vim controls
+      Input(Press(Keyboard(K)))     => update(&mut state, Move(UP)),
+      Input(Press(Keyboard(H)))     => update(&mut state, Move(LEFT)),
+      Input(Press(Keyboard(J)))     => update(&mut state, Move(DOWN)),
+      Input(Press(Keyboard(L)))     => update(&mut state, Move(RIGHT)),
+      
       Update(args)                  => update(&mut state, TimePasses(args.dt)),
       _                             => ()
     }
