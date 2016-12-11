@@ -38,7 +38,7 @@ fn should_bounce(
   // 
   // This can only happen at t0, otherwise we would have bounced already.
   match cell_at(level_number, dst) {
-    LeftDoor | RigthDoor | LockedDoor | Sign(_) | Wall => return true,
+    LeftDoor | RightDoor | LockedDoor | Sign(_) | Wall => return true,
     _                                                  => {},
   }
   

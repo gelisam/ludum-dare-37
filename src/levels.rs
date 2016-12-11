@@ -11,7 +11,7 @@ pub struct LevelDescription {
 pub enum CellDescription {
   Floor,
   LeftDoor,
-  RigthDoor,
+  RightDoor,
   Key(Lifetime),
   LockedDoor,
   OpenedDoor,
@@ -83,7 +83,7 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
     match (u1 as char, u2 as char) {
       (' ',' ') => Floor,
       ('L','D') => LeftDoor,
-      ('R','D') => RigthDoor,
+      ('R','D') => RightDoor,
       ('K', _ ) => Key(number()),
       ('D','D') => LockedDoor,
       ('S', _ ) => Sign(level_description.signs.iter().nth(number() as usize).unwrap()),
