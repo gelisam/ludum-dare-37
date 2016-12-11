@@ -5,7 +5,7 @@ use types::RawInputEvent::*;
 use types::PlayerPos::*;
 
 
-pub const PLAYER_SPEED: f64 = 8.0; // cells per second
+pub const PLAYER_SPEED: f64 = 4.0; // cells per second
 const TIME_TO_CROSS_CELL: f64 = 1.0 / PLAYER_SPEED;
 
 fn initiate_move(state: &mut State, dir: Dir) {
