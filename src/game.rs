@@ -1,3 +1,5 @@
+use graphics::math::*;
+
 use types::*;
 use types::RawInputEvent::*;
 
@@ -17,6 +19,7 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
           state.time += dt;
         },
         Move(dir) => {
+          state.pos = add(state.pos, dir);
         },
         Pause => {
           state.message = Some(".............................................\n\
