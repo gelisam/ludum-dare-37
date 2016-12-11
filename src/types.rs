@@ -13,8 +13,9 @@ pub const PLAYER_SPEED: f64 = 4.0;
 pub const SPINY_SPEED:  f64 = 8.0;
 
 // time to cross cell
-pub const PLAYER_MOVE_DURATION: f64 = 1.0 / PLAYER_SPEED;
-pub const SPINY_MOVE_DURATION:  f64 = 1.0 / SPINY_SPEED;
+pub const PLAYER_MOVE_DURATION:     f64 = 1.0 / PLAYER_SPEED;
+pub const SPINY_MOVE_DURATION:      f64 = 1.0 / SPINY_SPEED;
+pub const SPINY_HALF_MOVE_DURATION: f64 = SPINY_MOVE_DURATION / 2.0;
 
 
 pub type Message = &'static str;
