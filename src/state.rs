@@ -51,7 +51,7 @@ pub fn initial_state() -> State {
       right_pressed: false,
       most_recent_dir: None,
       buffered_dir:    None,
-      pos: AnimatedPos::Idle([0, 1]),
+      pos: moving_into_left_door(t),
     },
     corpses: VecDeque::new(),
     
