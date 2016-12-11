@@ -1,5 +1,3 @@
-use graphics::math::*;
-
 use types::*;
 
 
@@ -23,15 +21,6 @@ pub enum CellDescription {
 
 pub const LEFT_DOOR:  Pos = [0, 1];
 pub const RIGHT_DOOR: Pos = [8, 5];
-
-pub fn moving_into_left_door(t: Seconds) -> AnimatedPos {
-  AnimatedPos::MovingSince(add(LEFT_DOOR, LEFT), RIGHT, t)
-}
-
-pub fn moving_into_right_door(t: Seconds) -> AnimatedPos {
-  AnimatedPos::MovingSince(add(RIGHT_DOOR, RIGHT), LEFT, t)
-}
-
 
 pub const LEVEL_WIDTH: i8 = 9;
 pub const LEVEL_HEIGHT: i8 = 7;

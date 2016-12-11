@@ -1,7 +1,6 @@
 use graphics::math::*;
 
 use corpse::*;
-use levels::*;
 use player::*;
 use spiny::*;
 use state::*;
@@ -92,7 +91,7 @@ fn execute_action(state: &mut State, action: Action) {
       };
       state.corpses.push_back(corpse);
       
-      state.player.pos = moving_into_left_door(state.time);
+      state.player.pos = MovingInUntil(state.level_number - 1, state.level_number, state.time);
     },
     
     PreviousLevel => {
