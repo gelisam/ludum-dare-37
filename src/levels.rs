@@ -48,7 +48,7 @@ const ASCII_MAP_OFFSET: usize = ASCII_MAP_WIDTH + DOT_WIDTH;
 pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   use self::CellDescription::*;
   
-  if (pos[0] < 0) || (pos[1] < 0) || (pos[0] > LEVEL_WIDTH) || (pos[1] > LEVEL_HEIGHT) {
+  if (pos[0] < 0) || (pos[1] < 0) || (pos[0] >= LEVEL_WIDTH) || (pos[1] >= LEVEL_HEIGHT) {
     Floor
   } else {
     let level_description: &LevelDescription = &LEVELS[level_number as usize];
