@@ -24,6 +24,10 @@ pub enum RawInputEvent {
   AnyKey,
 }
 
+pub enum Action {
+  Move(Pos, Dir),
+}
+
 
 pub enum PlayerPos {
   Idle(Pos),

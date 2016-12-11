@@ -9,23 +9,22 @@ use types::PlayerPos::*;
 pub const PLAYER_SPEED: f64 = 4.0; // cells per second
 const TIME_TO_CROSS_CELL: f64 = 1.0 / PLAYER_SPEED;
 
-fn is_cell_walkable(level_number: LevelNumber, pos: Pos) -> bool {
+fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Action> {
   use levels::CellDescription::*;
+  use types::Action::*;
   
-  match cell_at(level_number, pos) {
-    LockedDoor => false,
-    Sign(_)    => false,
-    Wall       => false,
-    _          => true,
+  match cell_at(level_number, add(pos, dir)) {
+    LockedDoor => None,
+    Sign(_)    => None,
+    Wall       => None,
+    _          => Some(Move(pos, dir)),
   }
 }
 
-fn initiate_move(state: &mut State, dir: Dir) {
-  if let Idle(pos) = state.player_pos {
-    if is_cell_walkable(state.level_number, add(pos, dir)) {
-      state.buffered_dir = None;
-      state.player_pos = MovingSince(pos, dir, state.time);
-    }
+fn initiate_move(state: &mut State, dir: Dir) -> Option<Action> {
+  match state.player_pos {
+    Idle(pos)       => try_move_action(state.level_number, pos, dir),
+    MovingSince(..) => None,
   }
 }
 
@@ -43,29 +42,43 @@ fn release_direction(is_pressed: &mut bool) {
   *is_pressed = false;
 }
 
-fn update_player_pos(state: &mut State, t: Seconds) {
+fn update_player_pos(state: &mut State, t: Seconds) -> Option<Action> {
   if let MovingSince(pos, dir, t0) = state.player_pos {
     if t >= t0 + TIME_TO_CROSS_CELL {
       state.player_pos = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.
-      if state.buffered_dir == Some(UP)    { initiate_move(state, UP);    }
-      if state.buffered_dir == Some(LEFT)  { initiate_move(state, LEFT);  }
-      if state.buffered_dir == Some(DOWN)  { initiate_move(state, DOWN);  }
-      if state.buffered_dir == Some(RIGHT) { initiate_move(state, RIGHT); }
+      if state.buffered_dir == Some(UP)    { return initiate_move(state, UP);    }
+      if state.buffered_dir == Some(LEFT)  { return initiate_move(state, LEFT);  }
+      if state.buffered_dir == Some(DOWN)  { return initiate_move(state, DOWN);  }
+      if state.buffered_dir == Some(RIGHT) { return initiate_move(state, RIGHT); }
       
       // If the user is holding several keys, favour the most recent one.
-      if state.up_pressed    && state.most_recent_dir == Some(UP)    { initiate_move(state, UP);    }
-      if state.left_pressed  && state.most_recent_dir == Some(LEFT)  { initiate_move(state, LEFT);  }
-      if state.down_pressed  && state.most_recent_dir == Some(DOWN)  { initiate_move(state, DOWN);  }
-      if state.right_pressed && state.most_recent_dir == Some(RIGHT) { initiate_move(state, RIGHT); }
+      if state.up_pressed    && state.most_recent_dir == Some(UP)    { return initiate_move(state, UP);    }
+      if state.left_pressed  && state.most_recent_dir == Some(LEFT)  { return initiate_move(state, LEFT);  }
+      if state.down_pressed  && state.most_recent_dir == Some(DOWN)  { return initiate_move(state, DOWN);  }
+      if state.right_pressed && state.most_recent_dir == Some(RIGHT) { return initiate_move(state, RIGHT); }
       
       // Continue moving in one of the pressed directions even if none is the most recent.
-      if state.up_pressed    { initiate_move(state, UP);    }
-      if state.left_pressed  { initiate_move(state, LEFT);  }
-      if state.down_pressed  { initiate_move(state, DOWN);  }
-      if state.right_pressed { initiate_move(state, RIGHT); }
+      if state.up_pressed    { return initiate_move(state, UP);    }
+      if state.left_pressed  { return initiate_move(state, LEFT);  }
+      if state.down_pressed  { return initiate_move(state, DOWN);  }
+      if state.right_pressed { return initiate_move(state, RIGHT); }
     }
+  }
+  
+  None
+}
+
+
+fn execute_action(state: &mut State, action: Action) {
+  use types::Action::*;
+  
+  match action {
+    Move(pos, dir) => {
+      state.buffered_dir = None;
+      state.player_pos = MovingSince(pos, dir, state.time);
+    },
   }
 }
 
@@ -101,13 +114,13 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
           state.time += dt;
           let t = state.time;
           
-          update_player_pos(state, t);
+          update_player_pos(state, t).map(|action| execute_action(state, action));
         },
         
-        PressUp    => initiate_move(state, UP),
-        PressLeft  => initiate_move(state, LEFT),
-        PressDown  => initiate_move(state, DOWN),
-        PressRight => initiate_move(state, RIGHT),
+        PressUp    => { initiate_move(state, UP   ).map(|action| execute_action(state, action)); },
+        PressLeft  => { initiate_move(state, LEFT ).map(|action| execute_action(state, action)); },
+        PressDown  => { initiate_move(state, DOWN ).map(|action| execute_action(state, action)); },
+        PressRight => { initiate_move(state, RIGHT).map(|action| execute_action(state, action)); },
         
         Pause => {
           state.message = Some(".............................................\n\
