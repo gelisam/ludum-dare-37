@@ -1,4 +1,4 @@
-use graphics::math::Vec2d;
+use graphics::math::*;
 use graphics::types::Rectangle;
 
 
@@ -39,7 +39,10 @@ pub fn compute_f_pos(pos: Pos, dir: Dir, speed: f64, t0: Seconds, t: Seconds) ->
 
 pub fn compute_f_rect(f_pos: FPos) -> FRect {
   // all sprites are 1 cell by 1 cell
-  [f_pos[0], f_pos[1], 1.0, 1.0]
+  let f_rect = [f_pos[0], f_pos[1], 1.0, 1.0];
+  
+  // smaller collision rectangles to account for the round sprites
+  margin_rectangle(f_rect, 0.15)
 }
 
 
