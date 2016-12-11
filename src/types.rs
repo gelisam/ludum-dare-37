@@ -31,7 +31,7 @@ pub enum Action {
 }
 
 
-pub enum PlayerPos {
+pub enum AnimatedPos {
   Idle(Pos),
   MovingSince(Pos, Dir, Seconds),
 }
@@ -48,7 +48,7 @@ pub struct State {
   pub right_pressed: bool,
   pub most_recent_dir: Option<Dir>, // favour the last key if many are pressed
   pub buffered_dir:    Option<Dir>, // a key tap which hasn't been honored yet
-  pub player_pos: PlayerPos,
+  pub player_pos: AnimatedPos,
 }
 
 pub fn initial_state() -> State {
@@ -79,6 +79,6 @@ pub fn initial_state() -> State {
     right_pressed: false,
     most_recent_dir: None,
     buffered_dir:    None,
-    player_pos: PlayerPos::Idle([0, 1]),
+    player_pos: AnimatedPos::Idle([0, 1]),
   }
 }

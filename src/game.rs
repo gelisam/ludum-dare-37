@@ -3,7 +3,7 @@ use graphics::math::*;
 use levels::*;
 use types::*;
 use types::RawInputEvent::*;
-use types::PlayerPos::*;
+use types::AnimatedPos::*;
 
 
 pub const PLAYER_SPEED: f64 = 4.0; // cells per second
