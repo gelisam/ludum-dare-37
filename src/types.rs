@@ -40,7 +40,8 @@ pub struct State {
   pub left_pressed:  bool,
   pub down_pressed:  bool,
   pub right_pressed: bool,
-  pub most_recent_dir: Option<Dir>,
+  pub most_recent_dir: Option<Dir>, // favour the last key if many are pressed
+  pub buffered_dir:    Option<Dir>, // a key tap which hasn't been honored yet
   pub player_pos: PlayerPos,
 }
 
@@ -71,6 +72,7 @@ pub fn initial_state() -> State {
     down_pressed:  false,
     right_pressed: false,
     most_recent_dir: None,
+    buffered_dir:    None,
     player_pos: PlayerPos::Idle([0, 1]),
   }
 }

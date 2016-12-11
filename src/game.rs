@@ -34,12 +34,18 @@ fn update_player_pos(state: &mut State, t: Seconds) {
       state.player_pos = Idle(add(pos, dir));
       
       // If the user holds right and taps down, we want to go down one cell and then continue going right.
-      if state.most_recent_dir == Some(UP)    { state.most_recent_dir = None; initiate_move(state, UP);    }
-      if state.most_recent_dir == Some(LEFT)  { state.most_recent_dir = None; initiate_move(state, LEFT);  }
-      if state.most_recent_dir == Some(DOWN)  { state.most_recent_dir = None; initiate_move(state, DOWN);  }
-      if state.most_recent_dir == Some(RIGHT) { state.most_recent_dir = None; initiate_move(state, RIGHT); }
+      if state.buffered_dir == Some(UP)    { state.buffered_dir = None; initiate_move(state, UP);    }
+      if state.buffered_dir == Some(LEFT)  { state.buffered_dir = None; initiate_move(state, LEFT);  }
+      if state.buffered_dir == Some(DOWN)  { state.buffered_dir = None; initiate_move(state, DOWN);  }
+      if state.buffered_dir == Some(RIGHT) { state.buffered_dir = None; initiate_move(state, RIGHT); }
       
-      // Continue moving if the key is held down.
+      // If the user is holding several keys, favour the most recent one.
+      if state.up_pressed    && state.most_recent_dir == Some(UP)    { initiate_move(state, UP);    }
+      if state.left_pressed  && state.most_recent_dir == Some(LEFT)  { initiate_move(state, LEFT);  }
+      if state.down_pressed  && state.most_recent_dir == Some(DOWN)  { initiate_move(state, DOWN);  }
+      if state.right_pressed && state.most_recent_dir == Some(RIGHT) { initiate_move(state, RIGHT); }
+      
+      // Continue moving in one of the pressed directions even if none is the most recent.
       if state.up_pressed    { initiate_move(state, UP);    }
       if state.left_pressed  { initiate_move(state, LEFT);  }
       if state.down_pressed  { initiate_move(state, DOWN);  }
