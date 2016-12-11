@@ -6,7 +6,7 @@ pub fn update(state: &mut State, raw_input_event: RawInputEvent) {
   match state.message {
     Some(_) =>
       match raw_input_event {
-        Move(_) | Pause | AnyKey => {
+        AnyKey => {
           state.message = None;
         },
         _ => {},

@@ -46,7 +46,7 @@ fn main() {
   while let Some(e) = events.next(&mut window) {
     use piston::input::Button::{ Keyboard };
     use piston::input::Event::{ Render, Input, Update };
-    use piston::input::Input::{ Press };
+    use piston::input::Input::{ Press, Release };
     use piston::input::keyboard::Key::{ Up, Left, Down, Right,  W, A, S, D,  H, J, K, L,  P, Space };
     use types::RawInputEvent::{ TimePasses, Move, Pause, AnyKey };
     
@@ -76,8 +76,8 @@ fn main() {
       Input(Press(Keyboard(P)))     => update(&mut state, Pause),
       Input(Press(Keyboard(Space))) => update(&mut state, Pause),
       
-      // other keys (for dismissing messages)
-      Input(Press(Keyboard(_)))     => update(&mut state, AnyKey),
+      // unpause
+      Input(Release(Keyboard(_)))   => update(&mut state, AnyKey),
       
       _                             => ()
     }
