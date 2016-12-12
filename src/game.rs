@@ -78,6 +78,7 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
 fn execute_action(state: &mut State, action: Action) {
   use types::Action::*;
   
+  // you can't un-pause from the "THE END" message, you must quit using ESC
   if state.frozen {
     return;
   }
