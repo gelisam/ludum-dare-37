@@ -20,16 +20,16 @@ pub enum Cell {
 // Anything we need to keep track of in addition to the Cell contents, either because it moves, can
 // be picked up, or just because we need to display it lifetime.
 pub enum Entity {
-  SpinyE(Dir, Lifetime),
-  WallE(Lifetime),
+  SpinyE(MovingSpiny),
+  WallE(TemporaryWall),
 }
 
 pub fn lifetime_of(entity: &Entity) -> &Lifetime {
   use self::Entity::*;
   
   match entity {
-    &SpinyE(_, ref lifetime) => lifetime,
-    &WallE(ref lifetime)     => lifetime,
+    &SpinyE(ref moving_spiny)  => &moving_spiny.lifetime,
+    &WallE(ref temporary_wall) => &temporary_wall.lifetime,
   }
 }
 

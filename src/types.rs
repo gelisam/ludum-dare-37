@@ -119,3 +119,8 @@ pub struct MovingSpiny {
   pub dir: Dir,
   pub lifetime: Lifetime,
 }
+
+pub struct TemporaryWall {
+  pub pos: Pos,
+  pub lifetime: Lifetime,
+}
