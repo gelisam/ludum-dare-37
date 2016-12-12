@@ -74,6 +74,14 @@ pub const LEVELS: [LevelDescription; 3] = [
   },
 ];
 
+pub fn min_level() -> LevelNumber {
+  1
+}
+
+pub fn max_level() -> LevelNumber {
+  LEVELS.len() as u8
+}
+
 
 const DOT_WIDTH: usize = 1;
 const CELL_WIDTH: usize = 2;

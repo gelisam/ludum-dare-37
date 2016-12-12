@@ -107,9 +107,9 @@ fn execute_action(state: &mut State, action: Action) {
       state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
     },
     TransitionLevel(level_src, level_dst) => {
-      if level_dst == 0 {
+      if level_dst < min_level() {
         *state = initial_state();
-      } else if level_dst > LEVELS.len() as LevelNumber {
+      } else if level_dst > max_level() as LevelNumber {
         state.message = Some(".............................................\n\
                               .                                           .\n\
                               .                                           .\n\
