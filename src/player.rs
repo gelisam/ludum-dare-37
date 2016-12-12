@@ -63,7 +63,7 @@ fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Acti
   
   match cell_at(level_number, add(pos, dir)) {
     SignC(message) => Some(ReadSign(message)),
-    WallC(..)      => None,
+    WallC          => None,
     _              => Some(Move(pos, dir)),
   }
 }

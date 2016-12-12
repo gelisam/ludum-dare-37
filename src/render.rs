@@ -57,14 +57,12 @@ fn draw_time_bound_sprite(
 ) {
   draw_sprite(texture, f_pos, transform, gl);
   
-  if let &Lifetime::Mortal(level_min, level_max) = lifetime {
-    let lifetime_text = format!("{}-{}", level_min, level_max);
-    let dx = (f_pos[0] + 1.0) * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
-    let dy = (f_pos[1] + 1.0) * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
-    let xform = transform.trans(dx, dy)
-                         .scale(LIFETIME_PIXEL_SIZE as f64, LIFETIME_PIXEL_SIZE as f64);
-    draw_text_bottom_right(&lifetime_text, &resources.small_font, xform, gl);
-  }
+  let lifetime_text = format!("{}-{}", lifetime.level_min, lifetime.level_max);
+  let dx = (f_pos[0] + 1.0) * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
+  let dy = (f_pos[1] + 1.0) * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
+  let xform = transform.trans(dx, dy)
+                       .scale(LIFETIME_PIXEL_SIZE as f64, LIFETIME_PIXEL_SIZE as f64);
+  draw_text_bottom_right(&lifetime_text, &resources.small_font, xform, gl);
 }
 
 
@@ -85,10 +83,10 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoorC       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
-    RightDoorC      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    WallC(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, &lifetime, resources, transform, gl),
-    _               => {},
+    LeftDoorC  => draw_sprite(&resources.start_top,    f_pos, transform, gl),
+    RightDoorC => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
+    WallC      => draw_sprite(&resources.wall,         f_pos, transform, gl),
+    _          => {},
   }
 }
 

@@ -58,23 +58,20 @@ pub fn compute_f_rect(f_pos: FPos) -> FRect {
 }
 
 
-pub enum Lifetime {
-  Immortal,
-  Mortal(LevelNumber, LevelNumber), // lives from level_min to level_max, inclusive
+pub type LevelNumber = u8;
+
+// lives from level_min to level_max, inclusive
+pub struct Lifetime {
+  pub level_min: LevelNumber,
+  pub level_max: LevelNumber,
 }
 
 pub fn still_alive(lifetime: &Lifetime, level_number: LevelNumber) -> bool {
-  use self::Lifetime::*;
-  
-  match lifetime {
-    &Immortal                     => true,
-    &Mortal(level_min, level_max) => level_number >= level_min && level_number <= level_max,
-  }
+  level_number >= lifetime.level_min && level_number <= lifetime.level_max
 }
 
 
 pub type Message = &'static str;
-pub type LevelNumber = u8;
 pub type Radians = f64;
 
 
