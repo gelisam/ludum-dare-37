@@ -10,6 +10,8 @@ pub struct State {
   pub time: Seconds,
   
   pub message: Option<Message>,
+  pub frozen: bool,
+  
   pub level_number: LevelNumber,
   pub previous_level: LevelNumber,
   
@@ -44,6 +46,8 @@ pub fn initial_state() -> State {
                    .           press any key to begin          .\n\
                    .                                           .\n\
                    ............................................."),
+    frozen: false,
+    
     level_number: level_number,
     previous_level: previous_level,
     

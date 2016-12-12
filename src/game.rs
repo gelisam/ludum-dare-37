@@ -77,6 +77,10 @@ fn handle_raw_input_event(state: &mut State, raw_input_event: RawInputEvent) -> 
 fn execute_action(state: &mut State, action: Action) {
   use types::Action::*;
   
+  if state.frozen {
+    return;
+  }
+  
   match action {
     Move(pos, dir) => {
       state.player.buffered_dir = None;
@@ -104,6 +108,25 @@ fn execute_action(state: &mut State, action: Action) {
     TransitionLevel(level_src, level_dst) => {
       if level_dst == 0 {
         *state = initial_state();
+      } else if level_dst > LEVELS.len() as LevelNumber {
+        state.message = Some(".............................................\n\
+                              .                                           .\n\
+                              .                                           .\n\
+                              .                                           .\n\
+                              .                  THE END                  .\n\
+                              .                                           .\n\
+                              .           Thank you for playing           .\n\
+                              .    \"I've Seen This Room Twice Already\"!   .\n\
+                              .                                           .\n\
+                              .     If you have enjoyed it, consider      .\n\
+                              .     playing the Ludum Dare 31 prequel,    .\n\
+                              .     \"I've Seen This Room Before\" :)       .\n\
+                              .                                           .\n\
+                              .                                           .\n\
+                              .             press esc to quit             .\n\
+                              .                                           .\n\
+                              .............................................");
+        state.frozen = true;
       } else {
         state.previous_level = level_src;
         state.level_number = level_dst;
