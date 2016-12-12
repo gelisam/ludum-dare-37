@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use types::*;
 
 
@@ -71,7 +73,7 @@ pub const LEVELS: &'static [LevelDescription; 3] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD    ##>>##    ##.\
+                .LD    ##>>      ##.\
                 .##              ##.\
                 .##      S0      ##.\
                 .##              ##.\
@@ -184,6 +186,7 @@ pub fn entity_at(level_number: LevelNumber, pos: Pos) -> Option<Entity> {
                            pos: pos,
                            dir: dir,
                            lifetime: lifetime_at(level_number, pos),
+                           enabled: true,
                          }
                        )
                      ),
@@ -303,7 +306,22 @@ fn is_wall(entity: Entity) -> Option<TemporaryWall> {
 // specializations of the entity operations for spinies and walls.
 
 pub fn adjust_spinies(existing_spinies: Vec<MovingSpiny>, level_src: LevelNumber, level_dst: LevelNumber) -> Vec<MovingSpiny> {
-  adjust_entities(&lifetime_of_spiny, &is_spiny, existing_spinies, level_src, level_dst)
+  let mut spinies = adjust_entities(&lifetime_of_spiny, &is_spiny, existing_spinies, level_src, level_dst);
+  
+  // temporarily disable some spinies if they occupy the same cell
+  {
+    let mut occupied = HashSet::new();
+    for spiny in spinies.iter_mut() {
+      if occupied.contains(&spiny.pos) {
+        spiny.enabled = false;
+      } else {
+        occupied.insert(&spiny.pos);
+        spiny.enabled = true;
+      }
+    }
+  }
+  
+  spinies
 }
 
 pub fn adjust_walls(existing_walls: Vec<TemporaryWall>, level_src: LevelNumber, level_dst: LevelNumber) -> Vec<TemporaryWall> {

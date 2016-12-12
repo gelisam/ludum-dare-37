@@ -6,7 +6,11 @@ use types::*;
 
 
 pub fn compute_spiny_f_pos(spiny: &MovingSpiny, t0: Seconds, t: Seconds) -> FPos {
-  compute_f_pos(spiny.pos, spiny.dir, SPINY_SPEED, t0, t)
+  if spiny.enabled {
+    compute_f_pos(spiny.pos, spiny.dir, SPINY_SPEED, t0, t)
+  } else {
+    [spiny.pos[0] as f64, spiny.pos[1] as f64]
+  }
 }
 
 
@@ -135,27 +139,33 @@ pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber,
     
     // Keep moving in the same direction, we'll handle collisions in a moment.
     for spiny in spinies.iter_mut() {
-      spiny.pos = add(spiny.pos, spiny.dir);
+      if spiny.enabled {
+        spiny.pos = add(spiny.pos, spiny.dir);
+      }
     }
   }
   
   // Our spinies are on a grid, so we should be able to look up spinies by their position.
   let mut spinies_src = HashMap::with_capacity(spinies.len());
   for spiny in spinies.iter() {
-    spinies_src.insert(spiny.pos, spiny.dir);
+    if spiny.enabled {
+      spinies_src.insert(spiny.pos, spiny.dir);
+    }
   }
   
   // But the spinies are also moving, so their position overlaps two cells: their source and destination positions.
   // If two spinies are about to collide head-on in the middle of a cell, they can have the same destination.
   let mut spinies_dst = HashMap::with_capacity(spinies.len());
   for spiny in spinies.iter() {
-    let dst = add(spiny.pos, spiny.dir);
-    *spinies_dst.entry(dst).or_insert(0) += 1;
+    if spiny.enabled {
+      let dst = add(spiny.pos, spiny.dir);
+      *spinies_dst.entry(dst).or_insert(0) += 1;
+    }
   }
   
   // We now have everything we need to determine if a spiny should bounce.
   for spiny in spinies.iter_mut() {
-    if should_bounce(spiny.pos, spiny.dir, &mut spinies_src, &mut spinies_dst, level_number, *t0, t) {
+    if spiny.enabled && should_bounce(spiny.pos, spiny.dir, &mut spinies_src, &mut spinies_dst, level_number, *t0, t) {
       bounce_spiny(spiny, *t0, t);
     }
   }
