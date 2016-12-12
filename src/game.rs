@@ -128,7 +128,9 @@ fn execute_action(state: &mut State, action: Action) {
                               .                                           .\n\
                               .............................................");
         state.frozen = true;
-      } else {
+      } else if state.time == state.spinies_moving_since { // only transition when the spinies are aligned with the grid
+        state.player.pos = moving_in(level_src, level_dst, state.time);
+        
         state.previous_level = level_src;
         state.level_number = level_dst;
         
