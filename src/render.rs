@@ -5,7 +5,7 @@ extern crate opengl_graphics;
 extern crate piston;
 
 use graphics::*;
-use graphics::math::{ Matrix2d, Vec2d };
+use graphics::math::{ Matrix2d };
 use opengl_graphics::{ GlGraphics, Texture };
 
 use corpse::*;
@@ -19,7 +19,7 @@ use types::*;
 
 pub const PIXEL_SIZE: u8 = 5;
 
-fn draw_transparent_sprite(texture: &Texture, f_pos: Vec2d<f64>, alpha: f64, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_transparent_sprite(texture: &Texture, f_pos: FPos, alpha: f64, transform: Matrix2d, gl: &mut GlGraphics) {
   unsafe {
     // Sharp pixels please!
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -40,7 +40,7 @@ fn draw_transparent_sprite(texture: &Texture, f_pos: Vec2d<f64>, alpha: f64, tra
   }
 }
 
-fn draw_sprite(texture: &Texture, f_pos: Vec2d<f64>, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_sprite(texture: &Texture, f_pos: FPos, transform: Matrix2d, gl: &mut GlGraphics) {
   draw_transparent_sprite(texture, f_pos, 1.0, transform, gl);
 }
 
