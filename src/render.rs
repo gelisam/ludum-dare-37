@@ -60,11 +60,11 @@ fn draw_time_bound_sprite(
   
   if level_max < LevelNumber::max_value() {
     let lifetime_text = format!("{}-{}", level_min, level_max);
-    let dx = f_pos[0] * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
-    let dy = f_pos[1] * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
+    let dx = (f_pos[0] + 1.0) * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
+    let dy = (f_pos[1] + 1.0) * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
     let xform = transform.trans(dx, dy)
                          .scale(LIFETIME_PIXEL_SIZE as f64, LIFETIME_PIXEL_SIZE as f64);
-    draw_text(&lifetime_text, &resources.small_font, xform, gl);
+    draw_text_bottom_right(&lifetime_text, &resources.small_font, xform, gl);
   }
 }
 
