@@ -9,6 +9,7 @@ pub const SPRITE_HEIGHT: u32 = 10;
 pub struct Resources {
   pub big_font:      Font,
   pub small_font:    Font,
+  pub white_font:    Font,
   pub floor:         Texture,
   pub goal_top:      Texture,
   pub goal:          Texture,
@@ -40,6 +41,12 @@ pub fn load_resources() -> Resources {
                      zeroth_char: '-', grid_width: 13,
                      cell_width:   5.0, cell_height:   5.0,
                      sprite_width: 5.0, sprite_height: 5.0,
+                   },
+    white_font:    Font {
+                     texture: Texture::from_path(Path::new("images/white-font.png")).unwrap(),
+                     zeroth_char: '\x00', grid_width: 25,
+                     cell_width:   20.0, cell_height:   20.0,
+                     sprite_width: 10.0, sprite_height: 20.0,
                    },
     floor:         Texture::from_path(Path::new("images/floor.png")).unwrap(),
     goal_top:      Texture::from_path(Path::new("images/goal-top.png")).unwrap(),

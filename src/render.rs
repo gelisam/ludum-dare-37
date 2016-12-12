@@ -130,6 +130,9 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     draw_characters(state, resources, transform, gl);
     draw_upper_level(state.level_number, resources, transform, gl);
     
+    let level_text = format!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Level {}", state.level_number);
+    draw_text(&level_text, &resources.white_font, c.transform, gl);
+    
     for message in state.message {
       // Fade to white to make the text more readable
       rectangle([1.0, 1.0, 1.0, 0.8], [0.0, 0.0, args.width as f64, args.height as f64], c.transform, gl);
