@@ -19,7 +19,7 @@ fn should_bounce(
   t0: Seconds,
   t: Seconds
 ) -> bool {
-  use levels::CellDescription::*;
+  use levels::Cell::*;
   
   let dst = add(src, dir);
   
@@ -38,8 +38,8 @@ fn should_bounce(
   // 
   // This can only happen at t0, otherwise we would have bounced already.
   match cell_at(level_number, dst) {
-    LeftDoor | RightDoor | Sign(_) | Wall(..) => return true,
-    _                                                      => {},
+    LeftDoorC | RightDoorC | SignC(_) | WallC(..) => return true,
+    _                                             => {},
   }
   
   // Case 1: collision with a spiny at a cell boundary

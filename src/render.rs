@@ -69,26 +69,26 @@ fn draw_time_bound_sprite(
 
 
 fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  use levels::CellDescription::*;
+  use levels::Cell::*;
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor   => draw_sprite(&resources.start,    f_pos, transform, gl),
-    RightDoor  => draw_sprite(&resources.goal,     f_pos, transform, gl),
-    Sign(_)    => draw_sprite(&resources.sign,     f_pos, transform, gl),
-    _          => draw_sprite(&resources.floor,    f_pos, transform, gl),
+    LeftDoorC   => draw_sprite(&resources.start,    f_pos, transform, gl),
+    RightDoorC  => draw_sprite(&resources.goal,     f_pos, transform, gl),
+    SignC(_)    => draw_sprite(&resources.sign,     f_pos, transform, gl),
+    _           => draw_sprite(&resources.floor,    f_pos, transform, gl),
   }
 }
 
 fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  use levels::CellDescription::*;
+  use levels::Cell::*;
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
-    RightDoor      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    Wall(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, &lifetime, resources, transform, gl),
-    _              => {},
+    LeftDoorC       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
+    RightDoorC      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
+    WallC(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, &lifetime, resources, transform, gl),
+    _               => {},
   }
 }
 

@@ -44,27 +44,27 @@ pub fn compute_player_f_pos(player: &AnimatedPos, t: Seconds) -> FPos {
 
 
 fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Action> {
-  use levels::CellDescription::*;
+  use levels::Cell::*;
   use types::Action::*;
   
   match cell_at(level_number, pos) {
-    LeftDoor  => {
+    LeftDoorC  => {
       if dir == LEFT {
         return Some(PreviousLevel);
       }
     },
-    RightDoor => {
+    RightDoorC => {
       if dir == RIGHT {
         return Some(NextLevel);
       }
     },
-    _         => {},
+    _          => {},
   }
   
   match cell_at(level_number, add(pos, dir)) {
-    Sign(message) => Some(ReadSign(message)),
-    Wall(..)      => None,
-    _             => Some(Move(pos, dir)),
+    SignC(message) => Some(ReadSign(message)),
+    WallC(..)      => None,
+    _              => Some(Move(pos, dir)),
   }
 }
 

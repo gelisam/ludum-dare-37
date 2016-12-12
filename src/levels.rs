@@ -7,13 +7,21 @@ pub struct LevelDescription {
   signs: &'static [Message],
 }
 
-pub enum CellDescription {
-  Floor,
-  LeftDoor,
-  RightDoor,
-  Sign(Message),
-  Spiny(Dir, Lifetime),
-  Wall(Lifetime),
+// Static information about a cell obtained straight from the level description
+pub enum Cell {
+  FloorC,
+  LeftDoorC,
+  RightDoorC,
+  SignC(Message),
+  SpinyC(Dir, Lifetime),
+  WallC(Lifetime),
+}
+
+// Anything we need to keep track of in addition to the Cell contents, either because it moves, can
+// be picked up, or just because we need to display it lifetime. So even walls are "alive" in this game.
+pub enum Live {
+  SpinyL(Dir, Lifetime),
+  WallL(Lifetime),
 }
 
 
@@ -85,12 +93,12 @@ const CELL_WIDTH: usize = 2;
 const ASCII_MAP_WIDTH: usize = DOT_WIDTH + (LEVEL_WIDTH as usize)*CELL_WIDTH + DOT_WIDTH;
 const ASCII_MAP_OFFSET: usize = ASCII_MAP_WIDTH + DOT_WIDTH;
 
-pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
-  use self::CellDescription::*;
+pub fn cell_at(level_number: LevelNumber, pos: Pos) -> Cell {
+  use self::Cell::*;
   use types::Lifetime::*;
   
   if (pos[0] < 0) || (pos[1] < 0) || (pos[0] >= LEVEL_WIDTH) || (pos[1] >= LEVEL_HEIGHT) {
-    Floor
+    FloorC
   } else {
     let level_index = level_number as usize - 1; // LEVELS is 0-based, but level numbers are 1-based
     let level_description: &LevelDescription = &LEVELS[level_index];
@@ -109,27 +117,27 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
     let number = || u2 - '0' as u8;
     
     match (u1 as char, u2 as char) {
-      (' ',' ') => Floor,
-      ('L','D') => LeftDoor,
-      ('R','D') => RightDoor,
-      ('S', _ ) => Sign(level_description.signs.iter().nth(number() as usize).unwrap()),
-      ('^','^') => Spiny(UP,    Immortal),
-      ('<','<') => Spiny(LEFT,  Immortal),
-      ('v','v') => Spiny(DOWN,  Immortal),
-      ('>','>') => Spiny(RIGHT, Immortal),
-      ('^', _ ) => Spiny(UP,    Mortal(level_number, level_number + number())),
-      ('<', _ ) => Spiny(LEFT,  Mortal(level_number, level_number + number())),
-      ('v', _ ) => Spiny(DOWN,  Mortal(level_number, level_number + number())),
-      ('>', _ ) => Spiny(RIGHT, Mortal(level_number, level_number + number())),
-      ('#','#') => Wall(Immortal),
-      ('#', _ ) => Wall(Mortal(level_number, level_number + number())),
+      (' ',' ') => FloorC,
+      ('L','D') => LeftDoorC,
+      ('R','D') => RightDoorC,
+      ('S', _ ) => SignC(level_description.signs.iter().nth(number() as usize).unwrap()),
+      ('^','^') => SpinyC(UP,    Immortal),
+      ('<','<') => SpinyC(LEFT,  Immortal),
+      ('v','v') => SpinyC(DOWN,  Immortal),
+      ('>','>') => SpinyC(RIGHT, Immortal),
+      ('^', _ ) => SpinyC(UP,    Mortal(level_number, level_number + number())),
+      ('<', _ ) => SpinyC(LEFT,  Mortal(level_number, level_number + number())),
+      ('v', _ ) => SpinyC(DOWN,  Mortal(level_number, level_number + number())),
+      ('>', _ ) => SpinyC(RIGHT, Mortal(level_number, level_number + number())),
+      ('#','#') => WallC(Immortal),
+      ('#', _ ) => WallC(Mortal(level_number, level_number + number())),
       _         => panic!("syntax error in level description"),
     }
   }
 }
 
 pub fn load_spinies(existing_spinies: Vec<MovingSpiny>, level_number: LevelNumber) -> Vec<MovingSpiny> {
-  use self::CellDescription::*;
+  use self::Cell::*;
   use types::Lifetime::*;
   
   let mut vec = Vec::new();
@@ -147,7 +155,7 @@ pub fn load_spinies(existing_spinies: Vec<MovingSpiny>, level_number: LevelNumbe
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
       let pos = [i,j];
-      if let Spiny(dir, lifetime) = cell_at(level_number, pos) {
+      if let SpinyC(dir, lifetime) = cell_at(level_number, pos) {
         if let &Mortal(_, level_max) = &lifetime {
           if level_max < lub {
             vec.push(MovingSpiny {pos: pos, dir: dir, lifetime: lifetime });
