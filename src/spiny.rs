@@ -117,7 +117,9 @@ fn should_bounce(
 }
 
 fn bounce_spiny(spiny: &mut MovingSpiny, t0: Seconds, t: Seconds) {
-  spiny.pos = if t == t0 {
+  let dt = t - t0;
+  
+  spiny.pos = if dt <= SPINY_HALF_MOVE_DURATION {
                 // Case 1: collision at a cell boundary
                 spiny.pos
               } else {
