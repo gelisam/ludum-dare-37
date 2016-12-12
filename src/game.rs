@@ -10,7 +10,7 @@ use types::RawInputEvent::*;
 use types::AnimatedPos::*;
 
 
-fn should_die(player: &AnimatedPos, spinies: &Vec<MovingPos>, t0: Seconds, t: Seconds) -> Option<Action> {
+fn should_die(player: &AnimatedPos, spinies: &Vec<MovingSpiny>, t0: Seconds, t: Seconds) -> Option<Action> {
   let player_pos = compute_player_f_pos(player, t);
   let player_rect = compute_f_rect(player_pos);
   for spiny in spinies.iter() {

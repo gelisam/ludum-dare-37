@@ -5,13 +5,13 @@ use levels::*;
 use types::*;
 
 
-pub fn compute_spiny_f_pos(spiny: &MovingPos, t0: Seconds, t: Seconds) -> FPos {
+pub fn compute_spiny_f_pos(spiny: &MovingSpiny, t0: Seconds, t: Seconds) -> FPos {
   compute_f_pos(spiny.pos, spiny.dir, SPINY_SPEED, t0, t)
 }
 
 
 fn should_bounce(
-  spiny: &MovingPos,
+  spiny: &MovingSpiny,
   spinies_src: &HashMap<Pos, Dir>, // all the spinies, accessible by src.
   spinies_dst: &HashMap<Pos, i8>,  // all the spinies, accessible by dst.
   level_number: LevelNumber,
@@ -104,7 +104,7 @@ fn should_bounce(
   // collision with it in the next frame and it will bounce back towards the obstacle.
   if let Some(spiny2_dir) = spinies_src.get(&dst) {
     if spiny.dir == *spiny2_dir {
-      let spiny2 = MovingPos { pos: dst, dir: *spiny2_dir };
+      let spiny2 = MovingSpiny { pos: dst, dir: *spiny2_dir };
       if should_bounce(&spiny2, spinies_src, spinies_dst, level_number, t0, t) {
         return true;
       }
@@ -114,8 +114,8 @@ fn should_bounce(
   false
 }
 
-fn bounce_spiny(spiny: &mut MovingPos, t0: Seconds, t: Seconds) {
-  *spiny = MovingPos {
+fn bounce_spiny(spiny: &mut MovingSpiny, t0: Seconds, t: Seconds) {
+  *spiny = MovingSpiny {
     pos: if t == t0 {
       // Case 1: collision at a cell boundary
       spiny.pos
@@ -127,13 +127,13 @@ fn bounce_spiny(spiny: &mut MovingPos, t0: Seconds, t: Seconds) {
   }
 }
 
-pub fn update_spinies(spinies: &mut Vec<MovingPos>, level_number: LevelNumber, t0: &mut Seconds, t: Seconds) {
+pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber, t0: &mut Seconds, t: Seconds) {
   if t >= *t0 + SPINY_MOVE_DURATION {
     *t0 = t;
     
     // Keep moving in the same direction, we'll handle collisions in a moment.
     for spiny in spinies.iter_mut() {
-      *spiny = MovingPos {
+      *spiny = MovingSpiny {
         pos: add(spiny.pos, spiny.dir),
         dir: spiny.dir
       };

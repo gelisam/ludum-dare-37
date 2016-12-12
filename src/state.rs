@@ -19,7 +19,7 @@ pub struct State {
   pub corpses: VecDeque<Corpse>,
   
   pub spinies_moving_since: Seconds,
-  pub spinies: Vec<MovingPos>,
+  pub spinies: Vec<MovingSpiny>,
 }
 
 pub fn initial_state() -> State {

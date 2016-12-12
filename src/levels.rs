@@ -120,7 +120,7 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   }
 }
 
-pub fn load_spinies(level_number: LevelNumber) -> Vec<MovingPos> {
+pub fn load_spinies(level_number: LevelNumber) -> Vec<MovingSpiny> {
   use self::CellDescription::*;
   
   let mut vec = Vec::new();
@@ -128,7 +128,7 @@ pub fn load_spinies(level_number: LevelNumber) -> Vec<MovingPos> {
     for i in 0..LEVEL_WIDTH {
       let pos = [i,j];
       if let Spiny(dir) = cell_at(level_number, pos) {
-        vec.push(MovingPos {pos: pos, dir: dir});
+        vec.push(MovingSpiny {pos: pos, dir: dir});
       }
     }
   }

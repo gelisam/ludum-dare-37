@@ -123,7 +123,7 @@ fn draw_corpse(corpse: &Corpse, t: Seconds, resources: &Resources, transform: Ma
   draw_transparent_sprite(&resources.player, corpse.f_pos, alpha, transform, gl);
 }
 
-fn draw_spiny(spiny: &MovingPos, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_spiny(spiny: &MovingSpiny, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   let dt = t - t0;
   let x = spiny.pos[0] as f64 + dt * SPINY_SPEED * spiny.dir[0] as f64;
   let y = spiny.pos[1] as f64 + dt * SPINY_SPEED * spiny.dir[1] as f64;
