@@ -75,8 +75,6 @@ fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   match cell_at(level_number, pos) {
     LeftDoor   => draw_sprite(&resources.start,    f_pos, transform, gl),
     RightDoor  => draw_sprite(&resources.goal,     f_pos, transform, gl),
-    LockedDoor => draw_sprite(&resources.locked,   f_pos, transform, gl),
-    OpenedDoor => draw_sprite(&resources.unlocked, f_pos, transform, gl),
     Sign(_)    => draw_sprite(&resources.sign,     f_pos, transform, gl),
     _          => draw_sprite(&resources.floor,    f_pos, transform, gl),
   }
@@ -89,7 +87,6 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   match cell_at(level_number, pos) {
     LeftDoor       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
     RightDoor      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    OpenedDoor     => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
     Wall(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, &lifetime, resources, transform, gl),
     _              => {},
   }

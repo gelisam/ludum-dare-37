@@ -62,7 +62,6 @@ fn try_move_action(level_number: LevelNumber, pos: Pos, dir: Dir) -> Option<Acti
   }
   
   match cell_at(level_number, add(pos, dir)) {
-    LockedDoor    => None,
     Sign(message) => Some(ReadSign(message)),
     Wall(..)      => None,
     _             => Some(Move(pos, dir)),
