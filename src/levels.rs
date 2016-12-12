@@ -31,8 +31,8 @@ pub const RIGHT_DOOR: Pos = [8, 5];
 pub const LEVEL_WIDTH: i8 = 9;
 pub const LEVEL_HEIGHT: i8 = 7;
 
-fn is_inside_room(pos: Pos) -> bool {
-  pos[0] > 0 && pos[1] > 0 && pos[1] < LEVEL_WIDTH-1 && pos[1] < LEVEL_HEIGHT-1
+pub fn is_inside_room(pos: Pos) -> bool {
+  pos[0] > 0 && pos[1] > 0 && pos[0] < LEVEL_WIDTH-1 && pos[1] < LEVEL_HEIGHT-1
 }
 
 pub const LEVELS: &'static [LevelDescription; 3] = &[

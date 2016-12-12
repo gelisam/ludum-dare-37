@@ -20,6 +20,8 @@ pub struct State {
   
   pub spinies_moving_since: Seconds,
   pub spinies: Vec<MovingSpiny>,
+  
+  pub temporary_walls: Vec<TemporaryWall>,
 }
 
 pub fn initial_state() -> State {
@@ -64,5 +66,7 @@ pub fn initial_state() -> State {
     
     spinies_moving_since: t,
     spinies: adjust_spinies(Vec::new(), previous_level, level_number),
+    
+    temporary_walls: adjust_walls(Vec::new(), previous_level, level_number),
   }
 }

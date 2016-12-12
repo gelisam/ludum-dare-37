@@ -137,6 +137,10 @@ fn execute_action(state: &mut State, action: Action) {
         // swap state.spinies with a dummy list I do own, then I move that one into load_spinies.
         let tmp = mem::replace(&mut state.spinies, Vec::new());
         state.spinies = adjust_spinies(tmp, level_src, level_dst);
+        
+        // Same for temporary_walls
+        let tmp = mem::replace(&mut state.temporary_walls, Vec::new());
+        state.temporary_walls = adjust_walls(tmp, level_src, level_dst);
       }
     },
     

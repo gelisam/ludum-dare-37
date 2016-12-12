@@ -86,7 +86,10 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   match cell_at(level_number, pos) {
     LeftDoorC  => draw_sprite(&resources.start_top,    f_pos, transform, gl),
     RightDoorC => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    WallC      => draw_sprite(&resources.wall,         f_pos, transform, gl),
+    WallC      => if !is_inside_room(pos) {
+                    // draw over the character, but not over the temporary walls
+                    draw_sprite(&resources.wall, f_pos, transform, gl)
+                  },
     _          => {},
   }
 }
@@ -123,7 +126,13 @@ fn draw_spiny(spiny: &MovingSpiny, t0: Seconds, t: Seconds, resources: &Resource
   draw_time_bound_sprite(&resources.spiny, compute_spiny_f_pos(spiny, t0, t), &spiny.lifetime, resources, transform, gl);
 }
 
-fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_temporary_wall(temporary_wall: &TemporaryWall, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  let f_pos = [temporary_wall.pos[0] as f64, temporary_wall.pos[1] as f64];
+  
+  draw_time_bound_sprite(&resources.wall, f_pos, &temporary_wall.lifetime, resources, transform, gl);
+}
+
+fn draw_entities(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   for corpse in &state.corpses {
     draw_corpse(corpse, state.time, resources, transform, gl);
   }
@@ -132,6 +141,10 @@ fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl
   
   for spiny in &state.spinies {
     draw_spiny(spiny, state.spinies_moving_since, state.time, resources, transform, gl);
+  }
+  
+  for wall in &state.temporary_walls {
+    draw_temporary_wall(wall, resources, transform, gl);
   }
 }
 
@@ -142,7 +155,7 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     
     let transform = c.transform;
     draw_lower_level(state.level_number, resources, transform, gl);
-    draw_characters(state, resources, transform, gl);
+    draw_entities(state, resources, transform, gl);
     draw_upper_level(state.level_number, resources, transform, gl);
     
     let level_text = format!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Level {}", state.level_number);
