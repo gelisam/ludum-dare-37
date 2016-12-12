@@ -18,18 +18,18 @@ pub enum Cell {
 }
 
 // Anything we need to keep track of in addition to the Cell contents, either because it moves, can
-// be picked up, or just because we need to display it lifetime. So even walls are "alive" in this game.
-pub enum Live {
-  SpinyL(Dir, Lifetime),
-  WallL(Lifetime),
+// be picked up, or just because we need to display it lifetime.
+pub enum Entity {
+  SpinyE(Dir, Lifetime),
+  WallE(Lifetime),
 }
 
-pub fn lifetime_of(live: &Live) -> &Lifetime {
-  use self::Live::*;
+pub fn lifetime_of(entity: &Entity) -> &Lifetime {
+  use self::Entity::*;
   
-  match live {
-    &SpinyL(_, ref lifetime) => lifetime,
-    &WallL(ref lifetime)     => lifetime,
+  match entity {
+    &SpinyE(_, ref lifetime) => lifetime,
+    &WallE(ref lifetime)     => lifetime,
   }
 }
 
