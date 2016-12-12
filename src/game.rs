@@ -102,9 +102,13 @@ fn execute_action(state: &mut State, action: Action) {
       state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
     },
     TransitionLevel(level_src, level_dst) => {
-      state.previous_level = level_src;
-      state.level_number = level_dst;
-      state.spinies = load_spinies(level_dst);
+      if level_dst == 0 {
+        *state = initial_state();
+      } else {
+        state.previous_level = level_src;
+        state.level_number = level_dst;
+        state.spinies = load_spinies(level_dst);
+      }
     },
     
     Pause => {
