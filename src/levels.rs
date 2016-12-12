@@ -56,7 +56,7 @@ pub const LEVELS: &'static [LevelDescription; 3] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD        >>>>  ##.\
+                .LD    ##>>>>>>>>##.\
                 .##  ^^        ^^##.\
                 .##  ##  S0    ####.\
                 .##>>            ##.\
@@ -71,7 +71,7 @@ pub const LEVELS: &'static [LevelDescription; 3] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD        >>    ##.\
+                .LD    ##>>##    ##.\
                 .##              ##.\
                 .##      S0      ##.\
                 .##              ##.\

@@ -28,18 +28,21 @@ fn should_bounce(
   let dt = t - t0;
   
   // Case 0: collision with a wall
-  //   .................
-  //   .       .       .
-  //   . >>>>> . ##### .
-  //   . >>>>> . ##### .
-  //   . >>>>> . ##### .
-  //   .       .       .
-  //   .................
+  //   .................  .........................
+  //   .       .       .  .       .       .       .
+  //   . >>>>> . ##### .  . ##### . >>>>> . ##### .
+  //   . >>>>> . ##### .  . ##### . >>>>> . ##### .
+  //   . >>>>> . ##### .  . ##### . >>>>> . ##### .
+  //   .       .       .  .       .       .       .
+  //   .................  .........................
   // 
-  // This can only happen at t0, otherwise we would have bounced already.
-  match cell_at(level_number, dst) {
-    LeftDoorC | RightDoorC | SignC(_) | WallC => return true,
-    _                                         => {},
+  // We bounce at SPINY_HALF_MOVE_DURATION, not t0, in order to avoid a corner case when a spiny is stuck between
+  // two walls.
+  if dt > SPINY_HALF_MOVE_DURATION {
+    match cell_at(level_number, dst) {
+      LeftDoorC | RightDoorC | SignC(_) | WallC => return true,
+      _                                         => {},
+    }
   }
   
   // Case 1: collision with a spiny at a cell boundary
