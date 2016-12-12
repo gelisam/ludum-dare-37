@@ -45,29 +45,29 @@ fn draw_sprite(texture: &Texture, f_pos: FPos, transform: Matrix2d, gl: &mut GlG
 }
 
 
-fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use levels::CellDescription::*;
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor   => draw_sprite(&resource.start,    f_pos, transform, gl),
-    RightDoor  => draw_sprite(&resource.goal,     f_pos, transform, gl),
-    LockedDoor => draw_sprite(&resource.locked,   f_pos, transform, gl),
-    OpenedDoor => draw_sprite(&resource.unlocked, f_pos, transform, gl),
-    Sign(_)    => draw_sprite(&resource.sign,     f_pos, transform, gl),
-    _          => draw_sprite(&resource.floor,    f_pos, transform, gl),
+    LeftDoor   => draw_sprite(&resources.start,    f_pos, transform, gl),
+    RightDoor  => draw_sprite(&resources.goal,     f_pos, transform, gl),
+    LockedDoor => draw_sprite(&resources.locked,   f_pos, transform, gl),
+    OpenedDoor => draw_sprite(&resources.unlocked, f_pos, transform, gl),
+    Sign(_)    => draw_sprite(&resources.sign,     f_pos, transform, gl),
+    _          => draw_sprite(&resources.floor,    f_pos, transform, gl),
   }
 }
 
-fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resource: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use levels::CellDescription::*;
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor   => draw_sprite(&resource.start_top,    f_pos, transform, gl),
-    RightDoor  => draw_sprite(&resource.goal_top,     f_pos, transform, gl),
-    OpenedDoor => draw_sprite(&resource.unlocked_top, f_pos, transform, gl),
-    Wall       => draw_sprite(&resource.wall,         f_pos, transform, gl),
+    LeftDoor   => draw_sprite(&resources.start_top,    f_pos, transform, gl),
+    RightDoor  => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
+    OpenedDoor => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
+    Wall       => draw_sprite(&resources.wall,         f_pos, transform, gl),
     _          => {},
   }
 }
