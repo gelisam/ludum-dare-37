@@ -13,6 +13,7 @@ use font::*;
 use levels::*;
 use player::*;
 use resources::*;
+use spiny::*;
 use state::*;
 use types::*;
 
@@ -119,11 +120,7 @@ fn draw_corpse(corpse: &Corpse, t: Seconds, resources: &Resources, transform: Ma
 }
 
 fn draw_spiny(spiny: &MovingSpiny, t0: Seconds, t: Seconds, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
-  let dt = t - t0;
-  let x = spiny.pos[0] as f64 + dt * SPINY_SPEED * spiny.dir[0] as f64;
-  let y = spiny.pos[1] as f64 + dt * SPINY_SPEED * spiny.dir[1] as f64;
-  
-  draw_time_bound_sprite(&resources.spiny, [x,y], &spiny.lifetime, resources, transform, gl);
+  draw_time_bound_sprite(&resources.spiny, compute_spiny_f_pos(spiny, t0, t), &spiny.lifetime, resources, transform, gl);
 }
 
 fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
