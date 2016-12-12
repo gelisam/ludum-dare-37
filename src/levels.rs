@@ -24,15 +24,6 @@ pub enum Entity {
   WallE(TemporaryWall),
 }
 
-pub fn lifetime_of(entity: &Entity) -> &Lifetime {
-  use self::Entity::*;
-  
-  match entity {
-    &SpinyE(ref moving_spiny)  => &moving_spiny.lifetime,
-    &WallE(ref temporary_wall) => &temporary_wall.lifetime,
-  }
-}
-
 
 pub const LEFT_DOOR:  Pos = [0, 1];
 pub const RIGHT_DOOR: Pos = [8, 5];
