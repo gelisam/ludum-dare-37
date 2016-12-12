@@ -15,7 +15,7 @@ pub enum CellDescription {
   OpenedDoor,
   Sign(Message),
   Spiny(Dir),
-  Wall,
+  Wall(LevelNumber, LevelNumber),
 }
 
 
@@ -30,7 +30,7 @@ pub const LEVELS: [LevelDescription; 3] = [
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD              ##.\
+                .LD      #1      ##.\
                 .##              ##.\
                 .##      S0      ##.\
                 .##              ##.\
@@ -112,7 +112,8 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
       ('<','<') => Spiny(LEFT),
       ('v','v') => Spiny(DOWN),
       ('>','>') => Spiny(RIGHT),
-      ('#','#') => Wall,
+      ('#','#') => Wall(LevelNumber::min_value(), LevelNumber::max_value()),
+      ('#', _ ) => Wall(level_number, level_number + number()),
       _         => panic!("syntax error in level description"),
     }
   }

@@ -17,7 +17,8 @@ use state::*;
 use types::*;
 
 
-pub const PIXEL_SIZE: u8 = 5;
+pub const SPRITE_PIXEL_SIZE: u8 = 5;
+pub const LIFETIME_PIXEL_SIZE: u8 = 2;
 
 fn draw_transparent_sprite(texture: &Texture, f_pos: FPos, alpha: f64, transform: Matrix2d, gl: &mut GlGraphics) {
   unsafe {
@@ -31,7 +32,9 @@ fn draw_transparent_sprite(texture: &Texture, f_pos: FPos, alpha: f64, transform
   let color = [1.0, 1.0, 1.0, alpha as f32];
   let dx = f_pos[0] * SPRITE_WIDTH as f64;
   let dy = f_pos[1] * SPRITE_HEIGHT as f64;
-  Image::new_color(color).draw(texture, &Default::default(), transform.trans(dx, dy), gl);
+  let xform = transform.scale(SPRITE_PIXEL_SIZE as f64, SPRITE_PIXEL_SIZE as f64)
+                       .trans(dx, dy);
+  Image::new_color(color).draw(texture, &Default::default(), xform, gl);
   
   unsafe {
     // Sometimes the pixels still aren't sharp. There is no logical reason why setting this again after the
@@ -42,6 +45,27 @@ fn draw_transparent_sprite(texture: &Texture, f_pos: FPos, alpha: f64, transform
 
 fn draw_sprite(texture: &Texture, f_pos: FPos, transform: Matrix2d, gl: &mut GlGraphics) {
   draw_transparent_sprite(texture, f_pos, 1.0, transform, gl);
+}
+
+fn draw_time_bound_sprite(
+  texture: &Texture,
+  f_pos: FPos,
+  level_min: LevelNumber,
+  level_max: LevelNumber,
+  resources: &Resources,
+  transform: Matrix2d,
+  gl: &mut GlGraphics
+) {
+  draw_sprite(texture, f_pos, transform, gl);
+  
+  if level_max < LevelNumber::max_value() {
+    let lifetime_text = format!("{}-{}", level_min, level_max);
+    let dx = f_pos[0] * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
+    let dy = f_pos[1] * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
+    let xform = transform.trans(dx, dy)
+                         .scale(LIFETIME_PIXEL_SIZE as f64, LIFETIME_PIXEL_SIZE as f64);
+    draw_text(&lifetime_text, &resources.small_font, xform, gl);
+  }
 }
 
 
@@ -64,11 +88,11 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor   => draw_sprite(&resources.start_top,    f_pos, transform, gl),
-    RightDoor  => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    OpenedDoor => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
-    Wall       => draw_sprite(&resources.wall,         f_pos, transform, gl),
-    _          => {},
+    LeftDoor                     => draw_sprite(&resources.start_top,    f_pos, transform, gl),
+    RightDoor                    => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
+    OpenedDoor                   => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
+    Wall(level_min, level_max)   => draw_time_bound_sprite(&resources.wall, f_pos, level_min, level_max, resources, transform, gl),
+    _                            => {},
   }
 }
 
@@ -125,7 +149,7 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
   gl.draw(args.viewport(), |c, gl| {
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
-    let transform = c.transform.scale(PIXEL_SIZE as f64, PIXEL_SIZE as f64);
+    let transform = c.transform;
     draw_lower_level(state.level_number, resources, transform, gl);
     draw_characters(state, resources, transform, gl);
     draw_upper_level(state.level_number, resources, transform, gl);

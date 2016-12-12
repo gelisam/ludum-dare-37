@@ -38,8 +38,8 @@ fn should_bounce(
   // 
   // This can only happen at t0, otherwise we would have bounced already.
   match cell_at(level_number, dst) {
-    LeftDoor | RightDoor | LockedDoor | Sign(_) | Wall => return true,
-    _                                                  => {},
+    LeftDoor | RightDoor | LockedDoor | Sign(_) | Wall(..) => return true,
+    _                                                      => {},
   }
   
   // Case 1: collision with a spiny at a cell boundary

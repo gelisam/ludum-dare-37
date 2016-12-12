@@ -34,8 +34,8 @@ fn main() {
   // Create an Glutin window.
   let mut window: Window = WindowSettings::new(
         "I've Seen This Room Twice Already",
-        [ LEVEL_WIDTH  as u32 * PIXEL_SIZE as u32 * SPRITE_WIDTH
-        , LEVEL_HEIGHT as u32 * PIXEL_SIZE as u32 * SPRITE_HEIGHT
+        [ LEVEL_WIDTH  as u32 * SPRITE_PIXEL_SIZE as u32 * SPRITE_WIDTH
+        , LEVEL_HEIGHT as u32 * SPRITE_PIXEL_SIZE as u32 * SPRITE_HEIGHT
         ]
       )
       .opengl(opengl)
