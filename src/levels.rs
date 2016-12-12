@@ -24,6 +24,15 @@ pub enum Live {
   WallL(Lifetime),
 }
 
+pub fn lifetime_of(live: &Live) -> &Lifetime {
+  use self::Live::*;
+  
+  match live {
+    &SpinyL(_, ref lifetime) => lifetime,
+    &WallL(ref lifetime)     => lifetime,
+  }
+}
+
 
 pub const LEFT_DOOR:  Pos = [0, 1];
 pub const RIGHT_DOOR: Pos = [8, 5];
