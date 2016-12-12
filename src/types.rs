@@ -58,9 +58,13 @@ pub fn compute_f_rect(f_pos: FPos) -> FRect {
 }
 
 
+pub enum Lifetime {
+  Immortal,
+  Mortal(LevelNumber, LevelNumber), // lives from level_min to level_max, inclusive
+}
+
 pub type Message = &'static str;
 pub type LevelNumber = u8;
-pub type Lifetime = u8;
 pub type Radians = f64;
 
 

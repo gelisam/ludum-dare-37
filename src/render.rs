@@ -50,15 +50,14 @@ fn draw_sprite(texture: &Texture, f_pos: FPos, transform: Matrix2d, gl: &mut GlG
 fn draw_time_bound_sprite(
   texture: &Texture,
   f_pos: FPos,
-  level_min: LevelNumber,
-  level_max: LevelNumber,
+  lifetime: Lifetime,
   resources: &Resources,
   transform: Matrix2d,
   gl: &mut GlGraphics
 ) {
   draw_sprite(texture, f_pos, transform, gl);
   
-  if level_max < LevelNumber::max_value() {
+  if let Lifetime::Mortal(level_min, level_max) = lifetime {
     let lifetime_text = format!("{}-{}", level_min, level_max);
     let dx = (f_pos[0] + 1.0) * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
     let dy = (f_pos[1] + 1.0) * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
@@ -88,11 +87,11 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   
   let f_pos = [pos[0] as f64, pos[1] as f64];
   match cell_at(level_number, pos) {
-    LeftDoor                     => draw_sprite(&resources.start_top,    f_pos, transform, gl),
-    RightDoor                    => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
-    OpenedDoor                   => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
-    Wall(level_min, level_max)   => draw_time_bound_sprite(&resources.wall, f_pos, level_min, level_max, resources, transform, gl),
-    _                            => {},
+    LeftDoor       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
+    RightDoor      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
+    OpenedDoor     => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
+    Wall(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, lifetime, resources, transform, gl),
+    _              => {},
   }
 }
 

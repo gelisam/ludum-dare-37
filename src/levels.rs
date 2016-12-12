@@ -15,7 +15,7 @@ pub enum CellDescription {
   OpenedDoor,
   Sign(Message),
   Spiny(Dir),
-  Wall(LevelNumber, LevelNumber),
+  Wall(Lifetime),
 }
 
 
@@ -81,6 +81,7 @@ const ASCII_MAP_OFFSET: usize = ASCII_MAP_WIDTH + DOT_WIDTH;
 
 pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   use self::CellDescription::*;
+  use types::Lifetime::*;
   
   if (pos[0] < 0) || (pos[1] < 0) || (pos[0] >= LEVEL_WIDTH) || (pos[1] >= LEVEL_HEIGHT) {
     Floor
@@ -105,15 +106,15 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
       (' ',' ') => Floor,
       ('L','D') => LeftDoor,
       ('R','D') => RightDoor,
-      ('K', _ ) => Key(number()),
+      ('K', _ ) => Key(Mortal(level_number, level_number + number())),
       ('D','D') => LockedDoor,
       ('S', _ ) => Sign(level_description.signs.iter().nth(number() as usize).unwrap()),
       ('^','^') => Spiny(UP),
       ('<','<') => Spiny(LEFT),
       ('v','v') => Spiny(DOWN),
       ('>','>') => Spiny(RIGHT),
-      ('#','#') => Wall(LevelNumber::min_value(), LevelNumber::max_value()),
-      ('#', _ ) => Wall(level_number, level_number + number()),
+      ('#','#') => Wall(Immortal),
+      ('#', _ ) => Wall(Mortal(level_number, level_number + number())),
       _         => panic!("syntax error in level description"),
     }
   }
