@@ -23,6 +23,10 @@ pub const SPINY_HALF_MOVE_DURATION: Seconds = SPINY_MOVE_DURATION / 2.0;
 pub const CORPSE_FADE_OUT_DURATION: Seconds = 1.0;
 pub const CORPSE_SPEED: f64 = 1.0 / CORPSE_FADE_OUT_DURATION; // fraction of alpha to remove per second
 
+pub const TRANSITION_EXTRA_DURATION:      Seconds = 0.6;
+pub const TRANSITION_FLASH_DURATION:      Seconds = 0.2;
+pub const TRANSITION_HALF_FLASH_DURATION: Seconds = TRANSITION_FLASH_DURATION / 2.0;
+
 
 pub type Pos = Vec2d<i8>;
 pub type FPos = Vec2d<f64>;

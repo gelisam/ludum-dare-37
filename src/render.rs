@@ -79,6 +79,16 @@ fn draw_lower_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
   }
 }
 
+fn draw_static_entity(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  use levels::Entity::*;
+  
+  match entity_at(level_number, pos) {
+    Some(SpinyE(moving_spiny))  => draw_spiny(&moving_spiny, 0.0, 0.0, &resources, transform, gl),
+    Some(WallE(temporary_wall)) => draw_temporary_wall(&temporary_wall, &resources, transform, gl),
+    _                           => {},
+  }
+}
+
 fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
   use levels::Cell::*;
   
@@ -98,6 +108,14 @@ fn draw_lower_level(level_number: LevelNumber, resources: &Resources, transform:
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
       draw_lower_cell(level_number, [i,j], resources, transform, gl);
+    }
+  }
+}
+
+fn draw_static_entities(level_number: LevelNumber, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
+  for j in 0..LEVEL_HEIGHT {
+    for i in 0..LEVEL_WIDTH {
+      draw_static_entity(level_number, [i,j], resources, transform, gl);
     }
   }
 }
@@ -154,9 +172,21 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     clear([1.0, 1.0, 1.0, 1.0], gl);
     
     let transform = c.transform;
-    draw_lower_level(state.level_number, resources, transform, gl);
-    draw_entities(state, resources, transform, gl);
-    draw_upper_level(state.level_number, resources, transform, gl);
+    
+    let show_next_level = if state.time % TRANSITION_FLASH_DURATION < TRANSITION_HALF_FLASH_DURATION {
+                            state.next_level
+                          } else {
+                            None
+                          };
+    if let Some(next_level) = show_next_level {
+      draw_lower_level(next_level, resources, transform, gl);
+      draw_static_entities(next_level, resources, transform, gl);
+      draw_upper_level(next_level, resources, transform, gl);
+    } else {
+      draw_lower_level(state.level_number, resources, transform, gl);
+      draw_entities(state, resources, transform, gl);
+      draw_upper_level(state.level_number, resources, transform, gl);
+    }
     
     let level_text = format!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Level {}", state.level_number);
     draw_text(&level_text, &resources.white_font, c.transform, gl);

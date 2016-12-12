@@ -101,10 +101,16 @@ fn execute_action(state: &mut State, action: Action) {
     },
     
     PreviousLevel => {
-      state.player.pos = moving_out(state.level_number, state.level_number - 1, state.time);
+      let next_level = state.level_number - 1;
+      
+      state.next_level = Some(next_level);
+      state.player.pos = moving_out(state.level_number, next_level, state.time);
     },
     NextLevel => {
-      state.player.pos = moving_out(state.level_number, state.level_number + 1, state.time);
+      let next_level = state.level_number + 1;
+      
+      state.next_level = Some(next_level);
+      state.player.pos = moving_out(state.level_number, next_level, state.time);
     },
     TransitionLevel(level_src, level_dst) => {
       if level_dst < min_level() {
@@ -133,6 +139,7 @@ fn execute_action(state: &mut State, action: Action) {
         
         state.previous_level = level_src;
         state.level_number = level_dst;
+        state.next_level = None;
         
         // I want to move the old spiny list into load_spinies so I can move some of the spinies into
         // the new spiny list, but we don't own it so I can't move it. Instead, I use mem::replace to

@@ -125,7 +125,7 @@ pub fn update_player(player: &mut Player, level_number: LevelNumber, t: Seconds)
       }
     },
     MovingOutSince(level_src, level_dst, t0) => {
-      if t >= t0 + PLAYER_MOVE_DURATION {
+      if t >= t0 + PLAYER_MOVE_DURATION + TRANSITION_EXTRA_DURATION {
         Some(Action::TransitionLevel(level_src, level_dst))
       } else {
         None
