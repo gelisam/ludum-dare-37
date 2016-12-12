@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
 use graphics::math::*;
 
 use levels::*;
@@ -141,6 +142,17 @@ pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber,
     for spiny in spinies.iter_mut() {
       if spiny.enabled {
         spiny.pos = add(spiny.pos, spiny.dir);
+      }
+    }
+    
+    // re-enable spinies if appropriate
+    let mut occupied = HashSet::new();
+    for spiny in spinies.iter_mut() {
+      if occupied.contains(&spiny.pos) {
+        spiny.enabled = false;
+      } else {
+        occupied.insert(&spiny.pos);
+        spiny.enabled = true;
       }
     }
   }
