@@ -11,7 +11,8 @@ pub fn compute_spiny_f_pos(spiny: &MovingSpiny, t0: Seconds, t: Seconds) -> FPos
 
 
 fn should_bounce(
-  spiny: &MovingSpiny,
+  src: Pos,
+  dir: Dir,
   spinies_src: &HashMap<Pos, Dir>, // all the spinies, accessible by src.
   spinies_dst: &HashMap<Pos, i8>,  // all the spinies, accessible by dst.
   level_number: LevelNumber,
@@ -20,8 +21,7 @@ fn should_bounce(
 ) -> bool {
   use levels::CellDescription::*;
   
-  let src = spiny.pos;
-  let dst = add(src, spiny.dir);
+  let dst = add(src, dir);
   
   // Spinies move in unison, that is, they are cell-aligned on the same frame and they are the same
   // fraction of the way to the next cell as every other spiny. This simplifies collisions.
@@ -53,8 +53,8 @@ fn should_bounce(
   //   .................  .................  .................           .................
   // 
   // This can only happen at t0, otherwise we would have bounced already.
-  if let Some(spiny2_dir) = spinies_src.get(&dst) {
-    if spiny.dir != *spiny2_dir {
+  if let Some(dir2) = spinies_src.get(&dst) {
+    if dir != *dir2 {
       return true
     }
   }
@@ -102,10 +102,9 @@ fn should_bounce(
   // 
   // If the spiny in front of us bounces onto an obstacle, we should bounce as well, otherwise we'll have a head-on
   // collision with it in the next frame and it will bounce back towards the obstacle.
-  if let Some(spiny2_dir) = spinies_src.get(&dst) {
-    if spiny.dir == *spiny2_dir {
-      let spiny2 = MovingSpiny { pos: dst, dir: *spiny2_dir };
-      if should_bounce(&spiny2, spinies_src, spinies_dst, level_number, t0, t) {
+  if let Some(dir2) = spinies_src.get(&dst) {
+    if dir == *dir2 {
+      if should_bounce(dst, *dir2, spinies_src, spinies_dst, level_number, t0, t) {
         return true;
       }
     }
@@ -115,16 +114,14 @@ fn should_bounce(
 }
 
 fn bounce_spiny(spiny: &mut MovingSpiny, t0: Seconds, t: Seconds) {
-  *spiny = MovingSpiny {
-    pos: if t == t0 {
-      // Case 1: collision at a cell boundary
-      spiny.pos
-    } else {
-      // Case 2: collision in the middle of a cell
-      add(spiny.pos, spiny.dir)
-    },
-    dir: mul_scalar(spiny.dir, -1),
-  }
+  spiny.pos = if t == t0 {
+                // Case 1: collision at a cell boundary
+                spiny.pos
+              } else {
+                // Case 2: collision in the middle of a cell
+                add(spiny.pos, spiny.dir)
+              };
+  spiny.dir = mul_scalar(spiny.dir, -1);
 }
 
 pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber, t0: &mut Seconds, t: Seconds) {
@@ -133,10 +130,7 @@ pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber,
     
     // Keep moving in the same direction, we'll handle collisions in a moment.
     for spiny in spinies.iter_mut() {
-      *spiny = MovingSpiny {
-        pos: add(spiny.pos, spiny.dir),
-        dir: spiny.dir
-      };
+      spiny.pos = add(spiny.pos, spiny.dir);
     }
   }
   
@@ -156,7 +150,7 @@ pub fn update_spinies(spinies: &mut Vec<MovingSpiny>, level_number: LevelNumber,
   
   // We now have everything we need to determine if a spiny should bounce.
   for spiny in spinies.iter_mut() {
-    if should_bounce(spiny, &mut spinies_src, &mut spinies_dst, level_number, *t0, t) {
+    if should_bounce(spiny.pos, spiny.dir, &mut spinies_src, &mut spinies_dst, level_number, *t0, t) {
       bounce_spiny(spiny, *t0, t);
     }
   }

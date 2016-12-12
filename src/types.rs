@@ -107,4 +107,5 @@ pub fn moving_in(level_src: LevelNumber, level_dst: LevelNumber, t: Seconds) -> 
 pub struct MovingSpiny {
   pub pos: Pos,
   pub dir: Dir,
+  pub lifetime: Lifetime,
 }

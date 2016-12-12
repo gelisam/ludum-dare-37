@@ -14,7 +14,7 @@ pub enum CellDescription {
   LockedDoor,
   OpenedDoor,
   Sign(Message),
-  Spiny(Dir),
+  Spiny(Dir, Lifetime),
   Wall(Lifetime),
 }
 
@@ -46,7 +46,7 @@ pub const LEVELS: [LevelDescription; 3] = [
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD        >>>>  ##.\
+                .LD        >0>1  ##.\
                 .##  ^^        ^^##.\
                 .##  ##  S0    ####.\
                 .##>>            ##.\
@@ -109,10 +109,14 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
       ('K', _ ) => Key(Mortal(level_number, level_number + number())),
       ('D','D') => LockedDoor,
       ('S', _ ) => Sign(level_description.signs.iter().nth(number() as usize).unwrap()),
-      ('^','^') => Spiny(UP),
-      ('<','<') => Spiny(LEFT),
-      ('v','v') => Spiny(DOWN),
-      ('>','>') => Spiny(RIGHT),
+      ('^','^') => Spiny(UP,    Immortal),
+      ('<','<') => Spiny(LEFT,  Immortal),
+      ('v','v') => Spiny(DOWN,  Immortal),
+      ('>','>') => Spiny(RIGHT, Immortal),
+      ('^', _ ) => Spiny(UP,    Mortal(level_number, level_number + number())),
+      ('<', _ ) => Spiny(LEFT,  Mortal(level_number, level_number + number())),
+      ('v', _ ) => Spiny(DOWN,  Mortal(level_number, level_number + number())),
+      ('>', _ ) => Spiny(RIGHT, Mortal(level_number, level_number + number())),
       ('#','#') => Wall(Immortal),
       ('#', _ ) => Wall(Mortal(level_number, level_number + number())),
       _         => panic!("syntax error in level description"),
@@ -127,8 +131,8 @@ pub fn load_spinies(level_number: LevelNumber) -> Vec<MovingSpiny> {
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
       let pos = [i,j];
-      if let Spiny(dir) = cell_at(level_number, pos) {
-        vec.push(MovingSpiny {pos: pos, dir: dir});
+      if let Spiny(dir, lifetime) = cell_at(level_number, pos) {
+        vec.push(MovingSpiny {pos: pos, dir: dir, lifetime: lifetime });
       }
     }
   }

@@ -50,14 +50,14 @@ fn draw_sprite(texture: &Texture, f_pos: FPos, transform: Matrix2d, gl: &mut GlG
 fn draw_time_bound_sprite(
   texture: &Texture,
   f_pos: FPos,
-  lifetime: Lifetime,
+  lifetime: &Lifetime,
   resources: &Resources,
   transform: Matrix2d,
   gl: &mut GlGraphics
 ) {
   draw_sprite(texture, f_pos, transform, gl);
   
-  if let Lifetime::Mortal(level_min, level_max) = lifetime {
+  if let &Lifetime::Mortal(level_min, level_max) = lifetime {
     let lifetime_text = format!("{}-{}", level_min, level_max);
     let dx = (f_pos[0] + 1.0) * SPRITE_WIDTH as f64 * SPRITE_PIXEL_SIZE as f64;
     let dy = (f_pos[1] + 1.0) * SPRITE_HEIGHT as f64 * SPRITE_PIXEL_SIZE as f64;
@@ -90,7 +90,7 @@ fn draw_upper_cell(level_number: LevelNumber, pos: Pos, resources: &Resources, t
     LeftDoor       => draw_sprite(&resources.start_top,    f_pos, transform, gl),
     RightDoor      => draw_sprite(&resources.goal_top,     f_pos, transform, gl),
     OpenedDoor     => draw_sprite(&resources.unlocked_top, f_pos, transform, gl),
-    Wall(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, lifetime, resources, transform, gl),
+    Wall(lifetime) => draw_time_bound_sprite(&resources.wall, f_pos, &lifetime, resources, transform, gl),
     _              => {},
   }
 }
@@ -128,7 +128,7 @@ fn draw_spiny(spiny: &MovingSpiny, t0: Seconds, t: Seconds, resources: &Resource
   let x = spiny.pos[0] as f64 + dt * SPINY_SPEED * spiny.dir[0] as f64;
   let y = spiny.pos[1] as f64 + dt * SPINY_SPEED * spiny.dir[1] as f64;
   
-  draw_sprite(&resources.spiny, [x,y], transform, gl);
+  draw_time_bound_sprite(&resources.spiny, [x,y], &spiny.lifetime, resources, transform, gl);
 }
 
 fn draw_characters(state: &State, resources: &Resources, transform: Matrix2d, gl: &mut GlGraphics) {
