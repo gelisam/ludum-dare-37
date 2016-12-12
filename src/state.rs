@@ -63,6 +63,6 @@ pub fn initial_state() -> State {
     corpses: VecDeque::new(),
     
     spinies_moving_since: t,
-    spinies: load_spinies(Vec::new(), level_number),
+    spinies: adjust_spinies(Vec::new(), previous_level, level_number),
   }
 }

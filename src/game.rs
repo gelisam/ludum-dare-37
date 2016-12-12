@@ -136,7 +136,7 @@ fn execute_action(state: &mut State, action: Action) {
         // the new spiny list, but we don't own it so I can't move it. Instead, I use mem::replace to
         // swap state.spinies with a dummy list I do own, then I move that one into load_spinies.
         let tmp = mem::replace(&mut state.spinies, Vec::new());
-        state.spinies = load_spinies(tmp, level_dst);
+        state.spinies = adjust_spinies(tmp, level_src, level_dst);
       }
     },
     
