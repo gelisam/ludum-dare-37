@@ -216,12 +216,12 @@ pub fn entity_at(level_number: LevelNumber, pos: Pos) -> Option<Entity> {
 
 // Operations on entities which work with both spinies and walls.
 
-fn keep_live_entities<A, F>(lifetime_of_A: F, existing_entities: Vec<A>, level_number: LevelNumber) -> Vec<A>
+fn keep_live_entities<A, F>(lifetime_of_a: F, existing_entities: Vec<A>, level_number: LevelNumber) -> Vec<A>
   where F: Fn(&A) -> &Lifetime
 {
   let mut remaining_entities = Vec::new();
   for entity in existing_entities {
-    if still_alive(lifetime_of_A(&entity), level_number) {
+    if still_alive(lifetime_of_a(&entity), level_number) {
       remaining_entities.push(entity);
     }
   }
@@ -229,13 +229,13 @@ fn keep_live_entities<A, F>(lifetime_of_A: F, existing_entities: Vec<A>, level_n
   remaining_entities
 }
 
-fn list_entities<A, G>(is_A: &G, level_number: LevelNumber) -> Vec<A>
+fn list_entities<A, G>(is_a: &G, level_number: LevelNumber) -> Vec<A>
   where G: Fn(Entity) -> Option<A>
 {
   let mut vec = Vec::new();
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
-      if let Some(entity) = entity_at(level_number, [i,j]).and_then(is_A) {
+      if let Some(entity) = entity_at(level_number, [i,j]).and_then(is_a) {
         vec.push(entity);
       }
     }
@@ -246,8 +246,8 @@ fn list_entities<A, G>(is_A: &G, level_number: LevelNumber) -> Vec<A>
 
 // We only want to push new entities, that is, those which were dead in level_src and live in level_dst.
 fn push_new_entities<A, F, G>(
-  lifetime_of_A: &F,
-  is_A: &G,
+  lifetime_of_a: &F,
+  is_a: &G,
   entities: &mut Vec<A>,
   level_src: LevelNumber,
   level_dst: LevelNumber
@@ -255,8 +255,8 @@ fn push_new_entities<A, F, G>(
   where F: Fn(&A) -> &Lifetime,
         G: Fn(Entity) -> Option<A>,
 {
-  for entity in list_entities(is_A, level_dst) {
-    if !still_alive(lifetime_of_A(&entity), level_src) {
+  for entity in list_entities(is_a, level_dst) {
+    if !still_alive(lifetime_of_a(&entity), level_src) {
       entities.push(entity);
     }
   }
@@ -264,8 +264,8 @@ fn push_new_entities<A, F, G>(
 
 // Keep the entities which are still alive and add the new ones.
 fn adjust_entities<A, F, G>(
-  lifetime_of_A: &F,
-  is_A: &G,
+  lifetime_of_a: &F,
+  is_a: &G,
   existing_entities: Vec<A>,
   level_src: LevelNumber,
   level_dst: LevelNumber
@@ -273,8 +273,8 @@ fn adjust_entities<A, F, G>(
   where F: Fn(&A) -> &Lifetime,
         G: Fn(Entity) -> Option<A>,
 {
-  let mut remaining_entities = keep_live_entities(lifetime_of_A, existing_entities, level_dst);
-  push_new_entities(lifetime_of_A, is_A, &mut remaining_entities, level_src, level_dst);
+  let mut remaining_entities = keep_live_entities(lifetime_of_a, existing_entities, level_dst);
+  push_new_entities(lifetime_of_a, is_a, &mut remaining_entities, level_src, level_dst);
   
   remaining_entities
 }
