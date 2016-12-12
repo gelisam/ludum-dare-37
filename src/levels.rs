@@ -1,3 +1,4 @@
+use std::cmp;
 use types::*;
 
 
@@ -47,9 +48,9 @@ pub const LEVELS: [LevelDescription; 3] = [
     ascii_map: " . . . . . . . . . .\
                 .##################.\
                 .LD        >0>1  ##.\
-                .##  ^^        ^^##.\
+                .##  ^0        ^0##.\
                 .##  ##  S0    ####.\
-                .##>>            ##.\
+                .##>0            ##.\
                 .##              RD.\
                 .##################.",
     signs: &[
@@ -124,15 +125,31 @@ pub fn cell_at(level_number: LevelNumber, pos: Pos) -> CellDescription {
   }
 }
 
-pub fn load_spinies(level_number: LevelNumber) -> Vec<MovingSpiny> {
+pub fn load_spinies(existing_spinies: Vec<MovingSpiny>, level_number: LevelNumber) -> Vec<MovingSpiny> {
   use self::CellDescription::*;
+  use types::Lifetime::*;
   
   let mut vec = Vec::new();
+  let mut lub = LevelNumber::max_value();
+  for spiny in existing_spinies {
+    if still_alive(&spiny.lifetime, level_number) {
+      if let &Mortal(_, level_max) = &spiny.lifetime {
+        lub = cmp::min(lub, level_max);
+      }
+      
+      vec.push(spiny);
+    }
+  }
+  
   for j in 0..LEVEL_HEIGHT {
     for i in 0..LEVEL_WIDTH {
       let pos = [i,j];
       if let Spiny(dir, lifetime) = cell_at(level_number, pos) {
-        vec.push(MovingSpiny {pos: pos, dir: dir, lifetime: lifetime });
+        if let &Mortal(_, level_max) = &lifetime {
+          if level_max < lub {
+            vec.push(MovingSpiny {pos: pos, dir: dir, lifetime: lifetime });
+          }
+        }
       }
     }
   }

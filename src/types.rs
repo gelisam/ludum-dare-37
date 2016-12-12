@@ -63,6 +63,16 @@ pub enum Lifetime {
   Mortal(LevelNumber, LevelNumber), // lives from level_min to level_max, inclusive
 }
 
+pub fn still_alive(lifetime: &Lifetime, level_number: LevelNumber) -> bool {
+  use self::Lifetime::*;
+  
+  match lifetime {
+    &Immortal                     => true,
+    &Mortal(level_min, level_max) => level_number >= level_min && level_number <= level_max,
+  }
+}
+
+
 pub type Message = &'static str;
 pub type LevelNumber = u8;
 pub type Radians = f64;

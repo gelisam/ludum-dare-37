@@ -63,13 +63,6 @@ pub fn initial_state() -> State {
     corpses: VecDeque::new(),
     
     spinies_moving_since: t,
-    spinies: load_spinies(level_number),
+    spinies: load_spinies(Vec::new(), level_number),
   }
-}
-
-pub fn load_level(state: &mut State, level_number: LevelNumber, t: Seconds) {
-  state.level_number = level_number;
-  
-  state.spinies_moving_since = t;
-  state.spinies = load_spinies(level_number);
 }

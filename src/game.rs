@@ -1,3 +1,4 @@
+use std::mem;
 use graphics::math::*;
 
 use corpse::*;
@@ -130,7 +131,12 @@ fn execute_action(state: &mut State, action: Action) {
       } else {
         state.previous_level = level_src;
         state.level_number = level_dst;
-        state.spinies = load_spinies(level_dst);
+        
+        // I want to move the old spiny list into load_spinies so I can move some of the spinies into
+        // the new spiny list, but we don't own it so I can't move it. Instead, I use mem::replace to
+        // swap state.spinies with a dummy list I do own, then I move that one into load_spinies.
+        let tmp = mem::replace(&mut state.spinies, Vec::new());
+        state.spinies = load_spinies(tmp, level_dst);
       }
     },
     
