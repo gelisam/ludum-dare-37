@@ -37,7 +37,7 @@ pub fn is_inside_room(pos: Pos) -> bool {
   pos[0] > 0 && pos[1] > 0 && pos[0] < LEVEL_WIDTH-1 && pos[1] < LEVEL_HEIGHT-1
 }
 
-pub const LEVELS: &'static [LevelDescription; 13] = &[
+pub const LEVELS: &'static [LevelDescription; 11] = &[
   // LEVEL 1
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
@@ -116,44 +116,6 @@ pub const LEVELS: &'static [LevelDescription; 13] = &[
                 .##################.",
     signs: &[                                   //v-- last char
       "Now you know!"
-    ],
-  },
-  
-  // LEVEL 6
-  LevelDescription {
-    ascii_map: " . . . . . . . . . .\
-                .##################.\
-                .LD              ##.\
-                .##              ##.\
-                .##      S0      ##.\
-                .##  >>>>>>>>##  ##.\
-                .##          S1  RD.\
-                .##################.",
-    signs: &[                                   //v-- last char
-      "Ready, set...",
-      "GO!"
-    ],
-  },
-  
-  // LEVEL 7
-  LevelDescription {
-    ascii_map: " . . . . . . . . . .\
-                .##################.\
-                .LD  S0      S1  ##.\
-                .##              ##.\
-                .##              ##.\
-                .##  >>>>##>>>>  ##.\
-                .##              RD.\
-                .##################.",
-    signs: &[                                   //v-- last char
-      "If you time yourself correctly, you can\n\
-       control the number of spinies which appear\n\
-       on either side.\n\
-       \n\
-       But how many spinies can there be in a gap\n\
-       of that size for you to still be able to get\n\
-       through?",
-      "Hint: the answer is in Level 5.",
     ],
   },
   
