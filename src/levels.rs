@@ -37,20 +37,19 @@ pub fn is_inside_room(pos: Pos) -> bool {
   pos[0] > 0 && pos[1] > 0 && pos[0] < LEVEL_WIDTH-1 && pos[1] < LEVEL_HEIGHT-1
 }
 
-pub const LEVELS: &'static [LevelDescription; 3] = &[
+pub const LEVELS: &'static [LevelDescription; 13] = &[
   // LEVEL 1
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD      ##      ##.\
+                .LD            ####.\
                 .##              ##.\
-                .##      S0      ##.\
+                .##    ##S0##    ##.\
                 .##              ##.\
                 .##              RD.\
                 .##################.",
-    signs: &[
-      "This is a sequel to my Ludum Dare 31\n\
-       game, \"I've Seen This Room Before\"."
+    signs: &[                                   //v-- last char
+      "Can you figure out what the numbers mean?"
     ],
   },
   
@@ -58,14 +57,14 @@ pub const LEVELS: &'static [LevelDescription; 3] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD    ##>>>>>>>>##.\
-                .##  ^^        ^^##.\
-                .##  ##  S0    ####.\
-                .##>>            ##.\
+                .LD            ####.\
+                .##              ##.\
+                .##      S0####  ##.\
+                .##              ##.\
                 .##              RD.\
                 .##################.",
-    signs: &[
-      "Only slightly harder than the previous level :)"
+    signs: &[                                   //v-- last char
+      "How about now?"
     ],
   },
   
@@ -73,14 +72,177 @@ pub const LEVELS: &'static [LevelDescription; 3] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD    ##>>      ##.\
+                .LD            ####.\
+                .##              ##.\
+                .##      S0  ##  ##.\
+                .##          ##  ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[                                   //v-- last char
+      "You should be able to guess what's going to\n\
+       happen to that corner block by now."
+    ],
+  },
+  
+  // LEVEL 4
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD            S1##.\
+                .##              ##.\
+                .##          ^^  ##.\
+                .##      ^^  ^^  ##.\
+                .##S0^^  ^^  ^^  RD.\
+                .##################.",
+    signs: &[                                   //v-- last char
+      "I know, it's hard to read the numbers on the\n\
+       spinies when they move so fast. But now that\n\
+       you've stopped to read a sign, it's a lot\n\
+       easier isn't it :)",
+      "If there is no sign around, just press SPACE\n\
+       or P to pause the game."
+    ],
+  },
+  
+  // LEVEL 5
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD            S0##.\
+                .##              ##.\
+                .##          ^^  ##.\
+                .##      ^^  ##  ##.\
+                .##  ^^  ##  ##  RD.\
+                .##################.",
+    signs: &[                                   //v-- last char
+      "Now you know!"
+    ],
+  },
+  
+  // LEVEL 6
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##              ##.\
+                .##      S0      ##.\
+                .##  >>>>>>>>##  ##.\
+                .##          S1  RD.\
+                .##################.",
+    signs: &[                                   //v-- last char
+      "Ready, set...",
+      "GO!"
+    ],
+  },
+  
+  // LEVEL 7
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD  S0  S1  S2  ##.\
+                .##              ##.\
+                .##              ##.\
+                .##  >>>>##>>>>  ##.\
+                .##      S3      RD.\
+                .##################.",
+    signs: &[                                   //v-- last char
+      "If you time yourself correctly, you can\n\
+       control the number of spinies which appear\n\
+       on either side.\n\
+       \n\
+       But how spinies can there be in a gap of\n\
+       that size for you to be able to get through?",
+      "Hint: the answer is in Level 5.",
+      "Going to Level 5 will also re-synchronize\n\
+       the spinies, which will make this easier.",
+      "Congratulations! It's more luck than skill,\n\
+       I know :("
+    ],
+  },
+  
+  // LEVEL 8
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
                 .##              ##.\
                 .##      S0      ##.\
                 .##              ##.\
                 .##              RD.\
                 .##################.",
     signs: &[
-      "Last level."
+      "Almost there..."
+    ],
+  },
+  
+  // LEVEL 9
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##          ##  ##.\
+                .##          vv  ##.\
+                .##>>>>>>>>>>    ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
+    ],
+  },
+  
+  // LEVEL 10
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD          ##  ##.\
+                .##          ##  ##.\
+                .##          vv  ##.\
+                .##  >>>>>>>>    ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
+    ],
+  },
+  
+  // LEVEL 11
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##              ##.\
+                .##      S0      ##.\
+                .##              ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
+      "Same thing, with only one slight difference..."
+    ],
+  },
+  
+  // LEVEL 12
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD              ##.\
+                .##          ##  ##.\
+                .##          vv  ##.\
+                .##vv>>>>>>>>    ##.\
+                .##          ##  RD.\
+                .##################.",
+    signs: &[
+    ],
+  },
+  
+  // LEVEL 13
+  LevelDescription {
+    ascii_map: " . . . . . . . . . .\
+                .##################.\
+                .LD          ##  ##.\
+                .##          ##  ##.\
+                .##          vv  ##.\
+                .##vv>>>>>>>>    ##.\
+                .##              RD.\
+                .##################.",
+    signs: &[
     ],
   },
 ];

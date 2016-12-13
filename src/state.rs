@@ -27,8 +27,8 @@ pub struct State {
 
 pub fn initial_state() -> State {
   let t = 0.0;
-  let previous_level = 1;
-  let level_number = 2;
+  let level_number = 1;
+  let previous_level = level_number - 1;
   
   State {
     time: t,
