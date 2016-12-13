@@ -150,8 +150,9 @@ pub const LEVELS: &'static [LevelDescription; 13] = &[
        control the number of spinies which appear\n\
        on either side.\n\
        \n\
-       But how spinies can there be in a gap of\n\
-       that size for you to be able to get through?",
+       But how many spinies can there be in a gap\n\
+       of that size for you to still be able to get\n\
+       through?",
       "Hint: the answer is in Level 5.",
       "Going to Level 5 will also re-synchronize\n\
        the spinies, which will make this easier.",
