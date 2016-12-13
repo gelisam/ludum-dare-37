@@ -139,11 +139,11 @@ pub const LEVELS: &'static [LevelDescription; 13] = &[
   LevelDescription {
     ascii_map: " . . . . . . . . . .\
                 .##################.\
-                .LD  S0  S1  S2  ##.\
+                .LD  S0      S1  ##.\
                 .##              ##.\
                 .##              ##.\
                 .##  >>>>##>>>>  ##.\
-                .##      S3      RD.\
+                .##              RD.\
                 .##################.",
     signs: &[                                   //v-- last char
       "If you time yourself correctly, you can\n\
@@ -154,10 +154,6 @@ pub const LEVELS: &'static [LevelDescription; 13] = &[
        of that size for you to still be able to get\n\
        through?",
       "Hint: the answer is in Level 5.",
-      "Going to Level 5 will also re-synchronize\n\
-       the spinies, which will make this easier.",
-      "Congratulations! It's more luck than skill,\n\
-       I know :("
     ],
   },
   
