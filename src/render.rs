@@ -174,7 +174,15 @@ pub fn render(state: &State, args: &piston::input::RenderArgs, resources: &Resou
     let transform = c.transform;
     
     let show_next_level = if state.time % TRANSITION_FLASH_DURATION < TRANSITION_HALF_FLASH_DURATION {
-                            state.next_level
+                            if let Some(next_level) = state.next_level {
+                              if next_level <= max_level() {
+                                Some(next_level)
+                              } else {
+                                None
+                              }
+                            } else {
+                              None
+                            }
                           } else {
                             None
                           };
